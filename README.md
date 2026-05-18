@@ -1,14 +1,14 @@
-# Free SEO Check
+# Free SEO
+
+> **🚀 [Try it live at free-seo.click](https://free-seo.click)**
 
 A compact, stateless full-stack SEO auditing tool. Enter a domain or URL and get a scored report covering on-page SEO, indexing, technical signals, generative engine optimization (GEO), and social presence — all in one request.
 
 The app is intentionally stateless: no database, no authentication, no saved history, and no Docker requirement. Results live only in the current browser session and are gone after refresh.
 
-The "Recommedations" are taken from Google SEO Documentation.
+The "Recommendations" are taken from Google SEO Documentation.
 
-```bash
-No cookies and fully compliant with GDPR, CCPA and PECR.
-```
+**Privacy-First:** No cookies and fully compliant with GDPR, CCPA and PECR.
 
 ## Features
 
@@ -20,6 +20,7 @@ No cookies and fully compliant with GDPR, CCPA and PECR.
 - **IP-based rate limiting** with configurable cooldown
 - **Dark / light theme** with smooth CSS gradients
 - **Interactive category toggling** — hide or show categories to recalculate the overall score
+- **⚡ Performance optimized** — Handles 50+ concurrent users with browser pooling and HTTP connection reuse
 
 ## Requirements
 
@@ -66,15 +67,37 @@ Create a `.env` file at the project root (copy from the example below):
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `AUDIT_SPAM_PROTECTION` | No | `0` (disabled) | Cooldown in seconds between audits per IP |
+| `AUDIT_SPAM_PROTECTION` | No | `5` | Cooldown in seconds between audits per IP |
 | `PORT` | No | `80` | Server port (production mode) |
+| `HTTP_MAX_SOCKETS` | No | `25` | Maximum concurrent HTTP connections per host |
+| `HTTP_MAX_FREE_SOCKETS` | No | `10` | Maximum idle HTTP connections to keep alive |
+| `PLAYWRIGHT_MAX_BROWSERS` | No | `3` | Maximum Playwright browser instances (GEO capacity = value × 15) |
+| `PLAYWRIGHT_IDLE_TIMEOUT` | No | `300000` | Browser idle timeout in milliseconds (5 minutes) |
 
 Example:
 
 ```env
+# Rate limiting
 AUDIT_SPAM_PROTECTION=5
+
+# Server
 PORT=80
+
+# HTTP Performance (50 concurrent users)
+HTTP_MAX_SOCKETS=25
+HTTP_MAX_FREE_SOCKETS=10
+
+# Playwright Browser Pool (45 concurrent GEO checks)
+PLAYWRIGHT_MAX_BROWSERS=3
+PLAYWRIGHT_IDLE_TIMEOUT=300000
 ```
+
+**Scaling Guidelines:**
+
+- **Low traffic (1-10 users):** Use defaults or reduce to `HTTP_MAX_SOCKETS=10`, `PLAYWRIGHT_MAX_BROWSERS=1`
+- **Medium traffic (10-50 users):** Use defaults (`HTTP_MAX_SOCKETS=25`, `PLAYWRIGHT_MAX_BROWSERS=3`)
+- **High traffic (50-100 users):** Increase to `HTTP_MAX_SOCKETS=50`, `PLAYWRIGHT_MAX_BROWSERS=5`
+- **100+ users:** Consider multiple server instances behind load balancer
 
 ## Development
 
@@ -250,3 +273,22 @@ This is POC-level protection. Harden before exposing in a production, public-fac
 - Live results depend on the target site's current state (redirects, TLS, robots.txt, sitemaps can change at any time).
 - The score is a heuristic summary, not a search-engine ranking prediction.
 - Stateless design means no history, no trends, no comparison across audits.
+
+
+## License
+
+This project is licensed under the [Polyform Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0).
+
+### What this means:
+
+- ✅ **Free for personal use** - Use it for learning, personal projects, and non-commercial purposes
+- ✅ **Free for evaluation** - Test it, study it, modify it for your own use
+- ✅ **Open source** - Full source code available on GitHub
+- ❌ **No commercial use** - Cannot be used for commercial purposes without permission
+- ❌ **No SaaS** - Cannot offer this as a paid service
+
+For commercial licensing inquiries, please open an issue on GitHub.
+
+### Full License Text
+
+The complete license text is available at: https://polyformproject.org/licenses/noncommercial/1.0.0
