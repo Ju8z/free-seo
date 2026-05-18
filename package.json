@@ -1,0 +1,16 @@
+{
+  "name": "free-seo",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w client",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

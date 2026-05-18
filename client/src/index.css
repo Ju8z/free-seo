@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+:root {
+    color-scheme: light;
+    --theme-color-brand-page: #f5f7fb;
+    --theme-color-brand-page-tint: #fff3ec;
+    --theme-color-brand-surface: #ffffff;
+    --theme-color-brand-surface-soft: #fcf6f1;
+    --theme-color-brand-headline: #111827;
+    --theme-color-brand-body: #243042;
+    --theme-color-brand-muted: #66758a;
+    --theme-color-brand-accent: #e5673b;
+    --theme-color-brand-accent-hover: #c84d24;
+    --theme-color-brand-accent-soft: #fff0e8;
+    --theme-color-brand-warning: #d38a14;
+    --theme-color-brand-warning-soft: #fff6df;
+    --theme-color-brand-danger: #d64545;
+    --theme-color-brand-danger-soft: #ffe9e8;
+    --theme-color-brand-success: #1f9b6c;
+    --theme-color-brand-success-soft: #e7f7f0;
+    --theme-color-brand-border: #dde3ec;
+    --theme-color-brand-border-strong: #cfd7e3;
+    --theme-color-brand-card-header: #fcf8f5;
+    --theme-color-brand-neutral-soft: #eef2f7;
+    --theme-color-brand-input: #ffffff;
+    --theme-color-brand-input-disabled: #edf1f6;
+    --theme-color-brand-placeholder: #8c98a8;
+    --theme-shadow-panel: 0 18px 40px rgba(17, 24, 39, 0.08);
+    --theme-shadow-glow: 0 10px 30px rgba(229, 103, 59, 0.22);
+    --theme-code-background: #f7f1ec;
+    --theme-code-border: #e7d9ce;
+    --theme-page-background:
+        radial-gradient(circle at 12% -8%, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.58) 20%, transparent 42%),
+        radial-gradient(circle at 88% 12%, rgba(229, 103, 59, 0.13) 0, rgba(229, 103, 59, 0.07) 17%, transparent 36%),
+        radial-gradient(circle at 6% 100%, rgba(229, 103, 59, 0.1) 0, rgba(229, 103, 59, 0.04) 15%, transparent 34%),
+        repeating-linear-gradient(-45deg, transparent 0 58px, rgba(229, 103, 59, 0.045) 58px 59px),
+        linear-gradient(180deg, #fffaf6 0%, #f5f7fb 54%, #eef3f9 100%);
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --theme-color-brand-page: #0a0a0a;
+    --theme-color-brand-page-tint: #1a1310;
+    --theme-color-brand-surface: #12161d;
+    --theme-color-brand-surface-soft: #1a2029;
+    --theme-color-brand-headline: #f5f7fb;
+    --theme-color-brand-body: #e3e8ef;
+    --theme-color-brand-muted: #9aa7b8;
+    --theme-color-brand-accent: #ff7a45;
+    --theme-color-brand-accent-hover: #ff9166;
+    --theme-color-brand-accent-soft: rgba(255, 122, 69, 0.12);
+    --theme-color-brand-warning: #f3b547;
+    --theme-color-brand-warning-soft: rgba(243, 181, 71, 0.14);
+    --theme-color-brand-danger: #ff6b6b;
+    --theme-color-brand-danger-soft: rgba(255, 107, 107, 0.14);
+    --theme-color-brand-success: #34c38f;
+    --theme-color-brand-success-soft: rgba(52, 195, 143, 0.14);
+    --theme-color-brand-border: #283140;
+    --theme-color-brand-border-strong: #364154;
+    --theme-color-brand-card-header: #161b24;
+    --theme-color-brand-neutral-soft: #222936;
+    --theme-color-brand-input: #141922;
+    --theme-color-brand-input-disabled: #1c2330;
+    --theme-color-brand-placeholder: #7f8b9c;
+    --theme-shadow-panel: 0 22px 52px rgba(0, 0, 0, 0.34);
+    --theme-shadow-glow: 0 12px 36px rgba(255, 122, 69, 0.2);
+    --theme-code-background: #181e27;
+    --theme-code-border: #313c4d;
+    --theme-page-background:
+        radial-gradient(circle at 88% 10%, rgba(255, 122, 69, 0.16) 0, rgba(255, 122, 69, 0.1) 18%, transparent 40%),
+        radial-gradient(circle at 8% 100%, rgba(255, 122, 69, 0.08) 0, rgba(255, 122, 69, 0.04) 16%, transparent 30%),
+        repeating-linear-gradient(-45deg, transparent 0 60px, rgba(255, 255, 255, 0.03) 60px 61px),
+        linear-gradient(180deg, #0a0a0a 0%, #0a0a0a 100%);
+}
+
+@theme {
+    --color-brand-page: var(--theme-color-brand-page);
+    --color-brand-surface: var(--theme-color-brand-surface);
+    --color-brand-surface-soft: var(--theme-color-brand-surface-soft);
+    --color-brand-headline: var(--theme-color-brand-headline);
+    --color-brand-body: var(--theme-color-brand-body);
+    --color-brand-muted: var(--theme-color-brand-muted);
+    --color-brand-accent: var(--theme-color-brand-accent);
+    --color-brand-accent-dark: var(--theme-color-brand-accent-hover);
+    --color-brand-accent-soft: var(--theme-color-brand-accent-soft);
+    --color-brand-warning: var(--theme-color-brand-warning);
+    --color-brand-warning-soft: var(--theme-color-brand-warning-soft);
+    --color-brand-danger: var(--theme-color-brand-danger);
+    --color-brand-danger-soft: var(--theme-color-brand-danger-soft);
+    --color-brand-success: var(--theme-color-brand-success);
+    --color-brand-success-soft: var(--theme-color-brand-success-soft);
+    --color-brand-border: var(--theme-color-brand-border);
+    --color-brand-border-strong: var(--theme-color-brand-border-strong);
+    --color-brand-card-header: var(--theme-color-brand-card-header);
+    --color-brand-neutral-soft: var(--theme-color-brand-neutral-soft);
+    --color-brand-input: var(--theme-color-brand-input);
+    --color-brand-input-disabled: var(--theme-color-brand-input-disabled);
+
+    --font-family-sans: "Inter", "Segoe UI", sans-serif;
+
+    --shadow-panel: var(--theme-shadow-panel);
+    --shadow-glow: var(--theme-shadow-glow);
+
+    --animate-reveal: reveal 240ms ease-out;
+
+    @keyframes reveal {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
+html {
+    background-color: var(--theme-color-brand-page);
+}
+
+body {
+    background-color: var(--theme-color-brand-page);
+    background-image: var(--theme-page-background);
+    background-attachment: fixed;
+    color: var(--theme-color-brand-body);
+}
+
+
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--theme-color-brand-placeholder);
+    opacity: 1;
+}
