@@ -5,6 +5,23 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
 	plugins: [react(), apiPlugin()],
+	build: {
+		minify: 'esbuild',
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) {
+						return 'react-vendor';
+					}
+					if (id.includes('ResultsView')) {
+						return 'results';
+					}
+				}
+			}
+		},
+		cssCodeSplit: true,
+		chunkSizeWarningLimit: 500
+	}
 });
 
 function getClientIp(req: IncomingMessage): string {
@@ -35,7 +52,11 @@ function apiPlugin() {
 					res.write(`data: ${JSON.stringify({ count: getAuditCount() })}\n\n`);
 					subscribeToCountUpdates(res);
 					const keepAlive = setInterval(() => {
-						res.write(":ping\n\n");
+						try {
+							res.write(":ping\n\n");
+						} catch {
+							clearInterval(keepAlive);
+						}
 					}, 30000);
 					req.on("close", () => clearInterval(keepAlive));
 					return;

@@ -98,6 +98,16 @@ export function detectAllSocialLinks(context: AuditContext): AllSocialLinks {
 	let youtubeResult: YouTubeChannelLinkResult = { found: false, url: null, channelId: null };
 
 	for (const element of $("a[href]").toArray()) {
+		if (
+			facebookResult.found &&
+			xResult.found &&
+			instagramResult.found &&
+			linkedinResult.found &&
+			youtubeResult.found
+		) {
+			break;
+		}
+
 		const raw = $(element).attr("href");
 		if (!raw) continue;
 
@@ -159,10 +169,6 @@ export function detectAllSocialLinks(context: AuditContext): AllSocialLinks {
 					youtubeResult = { found: true, url: resolved.href, channelId: null };
 				}
 			}
-		}
-
-		if (facebookResult.found && xResult.found && instagramResult.found && linkedinResult.found && youtubeResult.found) {
-			break;
 		}
 	}
 

@@ -26,7 +26,35 @@ export function loadEnv(): void {
 
 export function getCooldownSeconds(): number {
 	const value = process.env.AUDIT_SPAM_PROTECTION;
-	if (!value || value === "null") return 0;
+	if (!value || value === "null") return 5;
 	const parsed = parseInt(value, 10);
-	return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+	return Number.isFinite(parsed) && parsed >= 0 ? parsed : 5;
+}
+
+export function getMaxHttpSockets(): number {
+	const value = process.env.HTTP_MAX_SOCKETS;
+	if (!value) return 25;
+	const parsed = parseInt(value, 10);
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : 25;
+}
+
+export function getMaxFreeHttpSockets(): number {
+	const value = process.env.HTTP_MAX_FREE_SOCKETS;
+	if (!value) return 10;
+	const parsed = parseInt(value, 10);
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : 10;
+}
+
+export function getMaxBrowsers(): number {
+	const value = process.env.PLAYWRIGHT_MAX_BROWSERS;
+	if (!value) return 3;
+	const parsed = parseInt(value, 10);
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : 3;
+}
+
+export function getBrowserIdleTimeout(): number {
+	const value = process.env.PLAYWRIGHT_IDLE_TIMEOUT;
+	if (!value) return 5 * 60 * 1000; // 5 minutes default
+	const parsed = parseInt(value, 10);
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : 5 * 60 * 1000;
 }

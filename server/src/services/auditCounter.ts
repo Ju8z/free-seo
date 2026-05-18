@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import type { ServerResponse } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,12 +36,17 @@ function writeCount(count: number): void {
 
 let cachedCount: number | null = null;
 const listeners = new Set<ServerResponse>();
+let pendingWrite = false;
 
 function notifyListeners(): void {
 	if (cachedCount === null) return;
 	const data = `data: ${JSON.stringify({ count: cachedCount })}\n\n`;
 	for (const res of listeners) {
-		res.write(data);
+		try {
+			res.write(data);
+		} catch {
+			listeners.delete(res);
+		}
 	}
 }
 
@@ -64,7 +69,16 @@ export function incrementAuditCount(): number {
 		cachedCount = readCount();
 	}
 	cachedCount++;
-	setImmediate(() => writeCount(cachedCount!));
-	setImmediate(() => notifyListeners());
+	
+	// Batch disk writes every 5 seconds instead of on every audit
+	if (!pendingWrite) {
+		pendingWrite = true;
+		setTimeout(() => {
+			writeCount(cachedCount!);
+			pendingWrite = false;
+		}, 5000);
+	}
+	
+	notifyListeners();
 	return cachedCount;
 }

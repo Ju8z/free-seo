@@ -343,6 +343,8 @@ export interface AuditContext {
 	metaDescription?: string;
 	canonicalUrl?: string;
 	h1Texts?: string[];
+	subheadingsText?: string;
+	imageAltText?: string;
 }
 
 export interface RobotsRule {

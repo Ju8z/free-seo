@@ -68,36 +68,40 @@ export function parseStructuredData(
 	});
 	
 	let microdataItems = 0;
-	context.$("[itemscope]").each((_index, element) => {
-		microdataItems++;
-		const entity = buildDomEntity(
-			context,
-			element,
-			"microdata",
-			context.$(element).attr("itemtype"),
-			"itemprop",
-		);
-		if (entity) {
-			entities.push(entity);
-			types.add(entity.type);
-		}
-	});
-	
+	if (context.html.includes("itemscope")) {
+		context.$("[itemscope]").each((_index, element) => {
+			microdataItems++;
+			const entity = buildDomEntity(
+				context,
+				element,
+				"microdata",
+				context.$(element).attr("itemtype"),
+				"itemprop",
+			);
+			if (entity) {
+				entities.push(entity);
+				types.add(entity.type);
+			}
+		});
+	}
+
 	let rdfaItems = 0;
-	context.$("[typeof]").each((_index, element) => {
-		rdfaItems++;
-		const entity = buildDomEntity(
-			context,
-			element,
-			"rdfa",
-			context.$(element).attr("typeof"),
-			"property",
-		);
-		if (entity) {
-			entities.push(entity);
-			types.add(entity.type);
-		}
-	});
+	if (context.html.includes("typeof=") || context.html.includes("typeof =")) {
+		context.$("[typeof]").each((_index, element) => {
+			rdfaItems++;
+			const entity = buildDomEntity(
+				context,
+				element,
+				"rdfa",
+				context.$(element).attr("typeof"),
+				"property",
+			);
+			if (entity) {
+				entities.push(entity);
+				types.add(entity.type);
+			}
+		});
+	}
 	
 	return {
 		jsonLdBlocks,

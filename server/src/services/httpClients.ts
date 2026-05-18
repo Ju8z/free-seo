@@ -1,9 +1,18 @@
 import http from "node:http";
 import https from "node:https";
 import axios, { type AxiosInstance, type CreateAxiosDefaults } from "axios";
+import { getMaxFreeHttpSockets, getMaxHttpSockets } from "./envConfig.js";
 
-const keepAliveAgent = new http.Agent({ keepAlive: true, maxSockets: 200 });
-const keepAliveHttpsAgent = new https.Agent({ keepAlive: true, maxSockets: 200 });
+const keepAliveAgent = new http.Agent({
+	keepAlive: true,
+	maxSockets: getMaxHttpSockets(),
+	maxFreeSockets: getMaxFreeHttpSockets()
+});
+const keepAliveHttpsAgent = new https.Agent({
+	keepAlive: true,
+	maxSockets: getMaxHttpSockets(),
+	maxFreeSockets: getMaxFreeHttpSockets()
+});
 
 const commonOptions: CreateAxiosDefaults = {
 	timeout: 8000,

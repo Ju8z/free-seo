@@ -1,9 +1,10 @@
 import * as cheerio from "cheerio";
-import { chromium } from "playwright";
+import { type Browser, chromium } from "playwright";
 import { parseStructuredData } from "./schemaParser.js";
 import { getGeoCheckScore } from "./geoScoring.js";
 import { assertPublicHttpUrl } from "./urlSafety.js";
 import { countWords, extractVisibleText, normalizeWhitespace } from "../utils/text.js";
+import { getBrowserIdleTimeout, getMaxBrowsers } from "./envConfig.js";
 import type { AuditContext, BaseCheckStatus, GeoRenderedContentResult, } from "../types.js";
 
 interface ContentSnapshot {
@@ -27,7 +28,7 @@ export async function checkGeoRenderedContent(
 	context: AuditContext,
 	renderer: PageRenderer = new PlaywrightPageRenderer(),
 ): Promise<GeoRenderedContentResult> {
-	const rawSnapshot = buildSnapshot(context.html, context.finalUrl);
+	const rawSnapshot = buildSnapshot(context.html, context.finalUrl, context.$);
 	let renderedSnapshot = rawSnapshot;
 	let renderError: string | null = null;
 	
@@ -130,8 +131,9 @@ export async function checkGeoRenderedContent(
 export function buildSnapshot(
 	html: string,
 	baseUrl: string,
+	preloaded$?: cheerio.CheerioAPI,
 ): ContentSnapshot {
-	const $ = cheerio.load(html || "");
+	const $ = preloaded$ ?? cheerio.load(html || "");
 	const text = extractVisibleText($);
 	
 	// Build a lightweight context for parseStructuredData (only needs $ and baseUrl properties)
@@ -176,13 +178,71 @@ export function buildSnapshot(
 }
 
 class PlaywrightPageRenderer implements PageRenderer {
+	private static browserPool: Browser[] = [];
+	private static readonly MAX_BROWSERS = getMaxBrowsers();
+	private static readonly IDLE_TIMEOUT = getBrowserIdleTimeout();
+	private static lastUsed: number[] = [];
+	
+	private static async getBrowser(): Promise<Browser> {
+		const now = Date.now();
+		
+		// Clean up idle browsers
+		for (let i = this.browserPool.length - 1 ; i >= 0 ; i--) {
+			const lastUsedTime = this.lastUsed[i];
+			if (lastUsedTime !== undefined && now - lastUsedTime > this.IDLE_TIMEOUT) {
+				try {
+					const browser = this.browserPool[i];
+					if (browser) {
+						await browser.close();
+					}
+				} catch {
+					// Ignore errors during cleanup
+				}
+				this.browserPool.splice(i, 1);
+				this.lastUsed.splice(i, 1);
+			}
+		}
+		
+		// Find least recently used browser or create new one
+		if (this.browserPool.length < this.MAX_BROWSERS) {
+			const browser = await chromium.launch({
+				headless: true,
+				args: ['--disable-dev-shm-usage', '--no-sandbox']
+			});
+			this.browserPool.push(browser);
+			this.lastUsed.push(now);
+			return browser;
+		}
+		
+		// Return least recently used browser
+		let oldestIndex = 0;
+		let oldestTime = this.lastUsed[0] ?? now;
+		for (let i = 1 ; i < this.lastUsed.length ; i++) {
+			const time = this.lastUsed[i] ?? now;
+			if (time < oldestTime) {
+				oldestTime = time;
+				oldestIndex = i;
+			}
+		}
+		
+		this.lastUsed[oldestIndex] = now;
+		const browser = this.browserPool[oldestIndex];
+		if (!browser) {
+			throw new Error("Browser pool is corrupted");
+		}
+		return browser;
+	}
+	
 	async render(url: string): Promise<string> {
 		const publicUrl = await assertPublicHttpUrl(url, "Rendered page URL");
-		const browser = await chromium.launch({ headless: true });
+		const browser = await PlaywrightPageRenderer.getBrowser();
+		
+		const context = await browser.newContext({
+			userAgent: "FreeSEOChecker/0.1 GEO Renderer",
+		});
+		
+		const page = await context.newPage();
 		try {
-			const page = await browser.newPage({
-				userAgent: "FreeSEOChecker/0.1 GEO Renderer",
-			});
 			page.setDefaultTimeout(8000);
 			await page.route("**/*", async(route) => {
 				const requestUrl = route.request().url();
@@ -216,7 +276,7 @@ class PlaywrightPageRenderer implements PageRenderer {
 			});
 			return await page.content();
 		} finally {
-			await browser.close();
+			await context.close();
 		}
 	}
 }
