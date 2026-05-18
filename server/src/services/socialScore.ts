@@ -1,10 +1,5 @@
 import type { AuditContext, SocialCheckItem, SocialResultsReport } from "../types.js";
-import {
-	detectAllSocialLinks,
-	detectOpenGraphTags,
-	detectFacebookPixel,
-	detectXCardTags,
-} from "./socialDetect.js";
+import { detectAllSocialLinks, detectFacebookPixel, detectOpenGraphTags, detectXCardTags, } from "./socialDetect.js";
 import { utilityClient } from "./httpClients.js";
 
 export function calculateSocialScore(items: SocialCheckItem[]): {
@@ -297,50 +292,56 @@ async function fetchYouTubeChannelActivity(
 		if (viewMatch) {
 			views = parseCount(viewMatch[1]!);
 		}
-
-		// Early return only if BOTH subscriber and view counts are already found
+		
+		// Skip the expensive ytInitialData parse if regex already gave us both values
+		if (subscribers !== null && views !== null) {
+			return { subscribers, views };
+		}
 
 		const ytDataMatch = html.match(/var ytInitialData\s*=\s*(\{.+?\});/s);
 		if (ytDataMatch) {
-			const data = JSON.parse(ytDataMatch[1]!);
-			const header =
-				data?.header?.c4TabbedHeaderRenderer ||
-				data?.header?.pageHeaderRenderer?.content?.pageHeaderViewModel;
-			if (header) {
-				// Try legacy subscriberCountText/viewCountText fields
-				if (!subscribers) {
-					const subText =
-						header.subscriberCountText?.simpleText ||
-						header.subscriberCountText?.runs?.[0]?.text ||
-						"";
-					subscribers = parseCount(subText);
-				}
-				if (!views) {
-					const viewText =
-						header.viewCountText?.simpleText ||
-						header.viewCountText?.runs?.[0]?.text ||
-						"";
-					views = parseCount(viewText);
-				}
+			let data: any = null;
+			try {
+				data = JSON.parse(ytDataMatch[1]!);
+			} catch {
+				// Malformed ytInitialData — fall through with what regex found
 			}
-			
-			// Newer YouTube structure: metadata.contentMetadataViewModel.metadataRows
-			const pvm = data?.header?.pageHeaderRenderer?.content?.pageHeaderViewModel;
-			const metadataRows =
-				pvm?.metadata?.contentMetadataViewModel?.metadataRows;
-			if (metadataRows) {
-				for (const row of metadataRows) {
-					if (row?.metadataParts) {
-						for (const part of row.metadataParts) {
-							const text = part?.text?.content || "";
-							const label = part?.text?.accessibilityLabel || "";
-							// e.g. "505K subscribers" or "505 thousand subscribers" for subscribers
-							// e.g. "763,485 views" for views
-							if (!subscribers && /subscriber/i.test(text + label)) {
-								subscribers = parseCount(text);
-							}
-							if (!views && /view/i.test(text) && !/subscriber/i.test(text)) {
-								views = parseCount(text);
+			if (data) {
+				const header =
+					data?.header?.c4TabbedHeaderRenderer ||
+					data?.header?.pageHeaderRenderer?.content?.pageHeaderViewModel;
+				if (header) {
+					if (!subscribers) {
+						const subText =
+							header.subscriberCountText?.simpleText ||
+							header.subscriberCountText?.runs?.[0]?.text ||
+							"";
+						subscribers = parseCount(subText);
+					}
+					if (!views) {
+						const viewText =
+							header.viewCountText?.simpleText ||
+							header.viewCountText?.runs?.[0]?.text ||
+							"";
+						views = parseCount(viewText);
+					}
+				}
+				
+				const pvm = data?.header?.pageHeaderRenderer?.content?.pageHeaderViewModel;
+				const metadataRows =
+					pvm?.metadata?.contentMetadataViewModel?.metadataRows;
+				if (metadataRows) {
+					for (const row of metadataRows) {
+						if (row?.metadataParts) {
+							for (const part of row.metadataParts) {
+								const text = part?.text?.content || "";
+								const label = part?.text?.accessibilityLabel || "";
+								if (!subscribers && /subscriber/i.test(text + label)) {
+									subscribers = parseCount(text);
+								}
+								if (!views && /view/i.test(text) && !/subscriber/i.test(text)) {
+									views = parseCount(text);
+								}
 							}
 						}
 					}

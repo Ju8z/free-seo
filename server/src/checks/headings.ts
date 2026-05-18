@@ -6,8 +6,8 @@ export function checkHeadings(context: AuditContext) {
 	let total = 0;
 	
 	context.$("h2, h3, h4, h5, h6").each((_i, el) => {
-		const tagName = (context.$(el).prop("tagName") || "").toLowerCase();
-		if (counts[tagName] !== undefined) {
+		const tagName = (el as { tagName?: string }).tagName?.toLowerCase();
+		if (tagName && counts[tagName] !== undefined) {
 			counts[tagName]++;
 			total++;
 		}

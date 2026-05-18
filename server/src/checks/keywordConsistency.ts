@@ -9,17 +9,9 @@ export function checkKeywordConsistency(
 		title: context.titleText ?? "",
 		metaDescription: context.metaDescription ?? "",
 		h1: (context.h1Texts ?? []).join(" "),
-		subheadings: context
-			.$("h2, h3, h4, h5, h6")
-			.map((_i, el) => context.$(el).text())
-			.get()
-			.join(" "),
+		subheadings: context.subheadingsText ?? "",
 		body: context.visibleText,
-		imageAlt: context
-			.$("img")
-			.map((_i, el) => context.$(el).attr("alt") || "")
-			.get()
-			.join(" "),
+		imageAlt: context.imageAltText ?? "",
 	};
 	
 	const keywordMap = new Map<

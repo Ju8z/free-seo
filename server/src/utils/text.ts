@@ -57,27 +57,33 @@ export function extractVisibleText($: CheerioAPI): string {
 		"header",
 		"footer",
 	]);
-
-	let text = "";
-
-	function walk(node: any) {
-		if (!node) return;
+	
+	const MAX_CHARS = 500_000;
+	const parts: string[] = [];
+	let total = 0;
+	
+	function walk(node: any): boolean {
+		if (!node) return true;
 		if (node.type === "text") {
-			text += node.data + " ";
-		} else if (node.type === "tag" && !ignoreTags.has(node.name)) {
+			parts.push(node.data);
+			total += node.data.length + 1;
+			return total < MAX_CHARS;
+		}
+		if (node.type === "tag" && !ignoreTags.has(node.name)) {
 			const children = node.children || [];
 			for (let i = 0; i < children.length; i++) {
-				walk(children[i]);
+				if (!walk(children[i])) return false;
 			}
 		}
+		return true;
 	}
 
 	const bodyNodes = $("body").get();
 	for (let i = 0; i < bodyNodes.length; i++) {
-		walk(bodyNodes[i]);
+		if (!walk(bodyNodes[i])) break;
 	}
-
-	return normalizeWhitespace(text);
+	
+	return normalizeWhitespace(parts.join(" "));
 }
 
 export function normalizeWhitespace(value: unknown): string {
@@ -99,10 +105,11 @@ export function extractKeywords(text: unknown): string[] {
 		const token = rawTokens[i];
 		if (!token) continue;
 		
-		const normalized = token
-			.toLowerCase()
-			.normalize("NFKD")
-			.replace(/[\u0300-\u036f]/g, "");
+		const lower = token.toLowerCase();
+		// ASCII fast-path: skip Unicode normalization for ordinary English/code text
+		const normalized = /^[\x20-\x7e]+$/.test(lower)
+			? lower
+			: lower.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
 
 		const matches = normalized.match(/[a-z0-9][a-z0-9'-]{2,}/g);
 		if (matches) {

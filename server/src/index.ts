@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
+import compression from "compression";
 import { runAudit } from "./services/runAudit.js";
 import { getAuditCount, incrementAuditCount, subscribeToCountUpdates } from "./services/auditCounter.js";
 import { getCooldownSeconds, loadEnv } from "./services/envConfig.js";
@@ -54,6 +55,7 @@ function isCoolingDown(ip: string): { coolingDown: true; retryAfter: number } | 
 }
 
 app.use(express.json({ limit: "32kb" }));
+app.use(compression({ level: 6 }));
 
 // API endpoints
 app.get("/api/audit/count", (_req, res) => {
@@ -71,7 +73,11 @@ app.get("/api/audit/count/stream", (req, res) => {
 	subscribeToCountUpdates(res);
 
 	const keepAlive = setInterval(() => {
-		res.write(":ping\n\n");
+		try {
+			res.write(":ping\n\n");
+		} catch {
+			clearInterval(keepAlive);
+		}
 	}, 30000);
 
 	req.on("close", () => {
@@ -103,8 +109,16 @@ app.post("/api/audit", async (req, res) => {
 	}
 });
 
-// Static files
-app.use(express.static(clientDist));
+// Static files with caching
+app.use(express.static(clientDist, {
+	maxAge: '1y',
+	immutable: true,
+	setHeaders: (res, path) => {
+		if (path.endsWith('.html')) {
+			res.setHeader('Cache-Control', 'no-cache');
+		}
+	}
+}));
 
 // SPA fallback: serve index.html for any unmatched route
 app.use((_req, res) => {
