@@ -29,7 +29,7 @@ function CheckIcon() {
 }
 
 export default function App() {
-	const { audit, error, isLoading, runAudit, clearError } = useAudit();
+	const { audit, error, isLoading, durationMs, runAudit, clearError } = useAudit();
 	const { theme, setTheme } = useTheme();
 	const inputRef = useRef<HTMLInputElement | null>( null );
 	const [ auditCount, setAuditCount ] = useState( 0 );
@@ -108,6 +108,7 @@ export default function App() {
 									inputRef={ inputRef }
 									auditCount={ auditCount }
 									cooldownSeconds={ cooldownSeconds }
+									durationMs={ durationMs }
 								/>
 							</div>
 							<ThemeToggle theme={ theme } setTheme={ setTheme }/>

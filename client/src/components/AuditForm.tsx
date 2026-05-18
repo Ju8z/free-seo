@@ -7,12 +7,14 @@ export default memo(function AuditForm({
 	inputRef,
 	auditCount,
 	cooldownSeconds = 0,
+	durationMs = null,
 }: {
 	onSubmit: (input: string) => Promise<void>;
 	isLoading: boolean;
 	inputRef?: RefObject<HTMLInputElement | null>;
 	auditCount: number;
 	cooldownSeconds?: number;
+	durationMs?: number | null;
 }) {
 	const [value, setValue] = useState("");
 	const [localError, setLocalError] = useState("");
@@ -91,6 +93,11 @@ export default memo(function AuditForm({
 			</div>
 			<p className="mt-0.5 text-xs ml-4 text-brand-accent">
 				Successful audits completed: <strong>{auditCount}</strong>
+				{ durationMs !== null && !isLoading && (
+					<span className="ml-2 text-brand-success">
+						Audit completed in: <strong>{ (durationMs / 1000).toFixed(1) } seconds</strong>
+					</span>
+				) }
 			</p>
 			{ localError && (
 				<p className="mt-1 text-xs text-brand-danger">

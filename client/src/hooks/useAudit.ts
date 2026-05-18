@@ -6,6 +6,7 @@ export interface UseAuditState {
 	audit: AuditReport | null;
 	error: string;
 	isLoading: boolean;
+	durationMs: number | null;
 }
 
 export interface UseAuditActions {
@@ -17,6 +18,7 @@ export function useAudit(): UseAuditState & UseAuditActions {
 	const [audit, setAudit] = useState<AuditReport | null>(null);
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [durationMs, setDurationMs] = useState<number | null>(null);
 	const abortRef = useRef<AbortController | null>(null);
 	
 	const runAudit = useCallback(async(input: string) => {
@@ -26,10 +28,13 @@ export function useAudit(): UseAuditState & UseAuditActions {
 		
 		setIsLoading(true);
 		setError("");
+		setDurationMs(null);
+		const startedAt = performance.now();
 		
 		try {
 			const result = await requestAudit(input, controller.signal);
 			setAudit(result);
+			setDurationMs(performance.now() - startedAt);
 		} catch (err: unknown) {
 			if (err instanceof DOMException && err.name === "AbortError") {
 				return;
@@ -50,5 +55,5 @@ export function useAudit(): UseAuditState & UseAuditActions {
 	
 	const clearError = useCallback(() => setError(""), []);
 	
-	return { audit, error, isLoading, runAudit, clearError };
+	return { audit, error, isLoading, durationMs, runAudit, clearError };
 }
