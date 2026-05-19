@@ -137,6 +137,44 @@ Open `http://localhost:80`.
 
 The Express server serves the API endpoints and the built client from `client/dist/` with an SPA fallback.
 
+### Docker Deployment
+
+```bash
+# First time setup
+chmod +x deploy.sh
+./deploy.sh
+```
+
+The `deploy.sh` script handles everything:
+1. Pulls latest code from git
+2. Builds the Docker image
+3. Stops and removes the old container
+4. Starts a new container with a persistent volume for the audit counter
+
+**Manual Docker commands:**
+
+```bash
+# Build
+docker build -t free-seo .
+
+# Run (with persistent audit counter)
+docker run -d \
+  --name free-seo \
+  -p 80:80 \
+  --env-file .env \
+  -v free-seo-data:/app/server/data \
+  --restart unless-stopped \
+  free-seo
+```
+
+**Update after code changes:**
+
+```bash
+./deploy.sh
+```
+
+The named volume `free-seo-data` persists the audit counter across rebuilds. The counter file is created automatically if it doesn't exist.
+
 ### Deployment notes
 
 - Set `PORT` to your preferred port (defaults to `80`)
