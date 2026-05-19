@@ -24,4 +24,5 @@ docker run -d \
   free-seo
 
 echo "Deployed!"
-docker logs -f free-seo
+echo "Recent logs:"
+docker logs --tail 20 free-seo
