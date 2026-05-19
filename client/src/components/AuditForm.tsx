@@ -64,7 +64,7 @@ export default memo(function AuditForm({
 	}, [localError]);
 
 	const buttonLabel = isLoading
-		? "..."
+		? ""
 		: cooldownRemaining > 0
 			? `Wait ${cooldownRemaining}s`
 			: "Audit";
@@ -91,7 +91,7 @@ export default memo(function AuditForm({
 					disabled={ disabled }
 				/>
 			</div>
-			<p className="mt-0.5 text-xs ml-4 text-brand-accent">
+			<p className="mt-0.5 text-xs ml-[94px] text-brand-accent">
 				Successful audits completed: <strong>{auditCount}</strong>
 				{ durationMs !== null && !isLoading && (
 					<span className="ml-2 text-brand-success">

@@ -62,7 +62,7 @@ export default function App() {
 					<div className="space-y-4">
 						{/* Title and Badges Row */ }
 						<div className="flex flex-wrap items-center gap-3">
-							<h1 className="text-4xl font-extrabold text-brand-headline">
+							<h1 className="-mt-1 text-4xl font-extrabold leading-none text-brand-headline">
 								FREE SEO
 							</h1>
 							<div className="flex flex-wrap items-center gap-3">
