@@ -55,7 +55,16 @@ function isCoolingDown(ip: string): { coolingDown: true; retryAfter: number } | 
 }
 
 app.use(express.json({ limit: "32kb" }));
-app.use(compression({ level: 6 }));
+app.use(compression({
+	level: 6,
+	filter: (req, res) => {
+		// Skip compression for Server-Sent Events to avoid buffering
+		if (res.getHeader("Content-Type") === "text/event-stream") {
+			return false;
+		}
+		return compression.filter(req, res);
+	},
+}));
 
 // API endpoints
 app.get("/api/audit/count", (_req, res) => {
@@ -65,8 +74,9 @@ app.get("/api/audit/count", (_req, res) => {
 app.get("/api/audit/count/stream", (req, res) => {
 	res.writeHead(200, {
 		"Content-Type": "text/event-stream",
-		"Cache-Control": "no-cache",
+		"Cache-Control": "no-cache, no-transform",
 		"Connection": "keep-alive",
+		"X-Accel-Buffering": "no",
 	});
 
 	res.write(`data: ${JSON.stringify({ count: getAuditCount() })}\n\n`);
