@@ -93,11 +93,16 @@ function HowToFixAction({
 }
 
 function buildFixCards(check: SeoCategoryCheck) {
+	const status = check.status === "warning" || check.status === "fail" || check.status === "pass"
+		? check.status
+		: undefined;
+
 	if (check.issues.length > 0) {
 		return check.issues.map((issue, index) => (
 			<FixCard
 				key={ `${ check.id }-${ index }` }
 				title={ issue }
+				status={ status }
 				explanation={ check.explanation || undefined }
 				recommendation={ getExplanation(check.recommendations, index) }
 				codeExample={ getOptionalIndexedValue(check.codeExamples, index) }
@@ -110,6 +115,7 @@ function buildFixCards(check: SeoCategoryCheck) {
 		<FixCard
 			key={ check.id }
 			title={ check.name }
+			status={ status }
 			explanation={ check.explanation || undefined }
 			recommendation={ check.recommendations[0] || "Follow the guidance below to fix this issue." }
 			codeExample={ check.codeExamples[0] }
