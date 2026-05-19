@@ -60,11 +60,7 @@ export function subscribeToCountUpdates(res: ServerResponse): void {
 export function getAuditCount(): number {
 	if (cachedCount === null) {
 		cachedCount = readCount();
-		// Ensure the data directory and file exist on first read
-		ensureDir();
-		if (!existsSync(COUNTER_FILE)) {
-			writeFileSync(COUNTER_FILE, JSON.stringify({ count: cachedCount }), "utf-8");
-		}
+		writeCount(cachedCount);
 	}
 	return cachedCount;
 }

@@ -11,7 +11,7 @@ COPY server/package.json server/
 # Install all dependencies (including devDependencies for building)
 RUN npm install
 
-# Copy source code (shared/ must come before client/ and server/ as they import from it)
+# Copy source code
 COPY shared/ shared/
 COPY client/ client/
 COPY server/ server/
@@ -50,11 +50,8 @@ WORKDIR /app
 COPY package.json ./
 COPY server/package.json server/
 
-# Install production dependencies for the server workspace
+# Install production dependencies for the server workspace (tsx is included as a dependency)
 RUN npm install -w server --omit=dev
-
-# tsx is a devDependency but needed at runtime to run the server
-RUN npm install -w server tsx
 
 # Install Playwright Chromium browser
 RUN npx -w server playwright install chromium
