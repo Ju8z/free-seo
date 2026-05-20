@@ -12,7 +12,7 @@ The "Recommendations" are taken from Google SEO Documentation.
 
 ## Features
 
-- **19 SEO checks** across 7 categories with weighted scoring
+- **23 SEO checks** across 7 categories with weighted scoring
 - **Generative Engine Optimization (GEO)** — identity schema detection, JS-dependent content analysis via Playwright, and llms.txt validation
 - **Social presence detection** — Facebook, X, Instagram, LinkedIn, YouTube links, Open Graph / X Card tags, Facebook Pixel
 - **SERP snippet preview** — simulated Google search result display
@@ -195,7 +195,7 @@ The named volume `free-seo-data` persists the audit counter across rebuilds. The
 
 ```
 URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheerio)
-→ structured data parsing → 16 sync checks → 5 parallel async checks
+→ structured data parsing → 20 sync checks → 5 parallel async checks
 → category scoring → SERP preview → JSON response
 ```
 
@@ -203,7 +203,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 2. **Parallel fetch** — page HTML and robots.txt fetched concurrently
 3. **HTML parsing** — Cheerio loads the HTML and extracts text, title, meta description, canonical, H1s
 4. **Structured data** — parses JSON-LD, microdata, and RDFa once for reuse across multiple checks
-5. **Synchronous checks** — runs 16 checks that only need the parsed HTML context
+5. **Synchronous checks** — runs 20 checks that only need the parsed HTML context
 6. **Async checks** — SSL validity, HTTPS redirect, XML sitemaps, GEO report, and Social report run in parallel
 7. **Scoring** — checks grouped into 7 categories, weighted and scored, then aggregated into an overall score (0–100)
 8. **SERP preview** — builds a simulated Google search result snippet
@@ -226,6 +226,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | HTML Language | Declared `lang` attribute on `<html>` |
 | Detected Language | Actual language detected from page text via franc-min |
 | Canonical URL | Presence of the canonical link tag |
+| Search Favicon | Presence of a `<link rel="icon">` tag for Google Search display |
 
 ### Structure (weight 0.15)
 | Check | What it does |
@@ -240,6 +241,8 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | Keyword Consistency | Primary keyword presence in title, headings, and body text |
 | Content Amount | Minimum word count threshold |
 | Image Alt Text | Missing alt attributes on images |
+| Crawlable Links | Detects uncrawlable links (`javascript:`, empty hrefs) and generic anchor text |
+| Image Dimensions | Missing `width`/`height` attributes that cause Cumulative Layout Shift (CLS) |
 
 ### Indexing (weight 0.20)
 | Check | What it does |
@@ -256,6 +259,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | SSL Enabled | Valid TLS certificate on the final URL |
 | HTTPS Redirect | HTTP → HTTPS redirect from the non-secure origin |
 | Analytics | GA4, Google Tag Manager, or Universal Analytics detection |
+| Mobile Viewport | Presence and correctness of the `<meta name="viewport">` tag |
 
 ### Generative Engine Optimization (weight 0.10)
 | Check | What it does |
@@ -273,7 +277,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | Facebook Pixel | Presence of the Facebook Pixel tracking code |
 | YouTube Activity | Channel subscriber and view counts (when a YouTube link is found) |
 
-Each check returns `status` (pass / warning / fail / info), `summary`, `details`, `recommendation`, and `evidence`.
+Each check returns `status` (pass / warning / fail / info), `summary`, `explanation`, `recommendation`, `codeExample`, and `aiPrompt`.
 
 ## Stack
 
