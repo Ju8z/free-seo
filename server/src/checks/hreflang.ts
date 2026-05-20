@@ -76,11 +76,9 @@ export function checkHreflang(context: AuditContext) {
 			explanation:
 				"Best practice: each alternate set should include unique language values and a self-reference.",
 			recommendation:
-				"Deduplicate your hreflang values and ensure you include a self-referencing tag. Google requires bidirectional and self-referencing tags to establish a valid alternate set.",
+				"Deduplicate your hreflang values and include a self-referencing tag pointing to this page's URL. Google's hreflang docs require self-referencing and bidirectional links for an alternate set to be considered valid.",
 			codeExample: `<head>\n  <link rel="alternate" hreflang="en" href="https://${domain}/en/page">\n  <link rel="alternate" hreflang="es" href="https://${domain}/es/page">\n  <link rel="alternate" hreflang="x-default" href="https://${domain}/page">\n</head>`,
-			aiPrompt: duplicateCodes.length > 0
-				? `Duplicate hreflang values found: ${ duplicateCodes.join(", ") }. Remove duplicate hreflang tags and ensure each language code appears only once in your hreflang set.`
-				: "The hreflang set is missing a self-reference to the current page. Add a hreflang tag pointing to this page's URL.",
+			aiPrompt: `Hreflang issue detected: duplicate codes = [${ duplicateCodes.join(", ") || "none" }], self-reference present = ${ hasSelfReference }. Deduplicate so every language/region code appears exactly once, and add a self-referencing tag pointing to this page's own URL. Both conditions must hold together for Google to treat the alternate set as valid.`,
 		});
 	}
 	

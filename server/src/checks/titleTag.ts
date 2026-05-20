@@ -31,9 +31,9 @@ export function checkTitleTag(context: AuditContext) {
 			summary: `This page has ${ titles } non-empty title tags.`,
 			explanation: `First title is ${ length } characters long. `,
 			recommendation:
-				"Keep one title tag in the head so search engines receive one clear page title. Recommended maximum ~60 characters and 1 title tag.",
+				"Keep a single title tag in the head so Google has one clear page title to display in search results. Recommended maximum ~60 characters and 1 title tag.",
 			codeExample: "<head>\n  <title>Your Single Page Title - Main Keyword</title>\n</head>",
-			aiPrompt: "This page has multiple title tags which can confuse search engines. Remove all duplicate <title> tags and keep only one that accurately describes the page content with the main keyword included.",
+			aiPrompt: "This page has multiple title tags, which gives Google more than one candidate title for the same page. Remove all duplicate <title> tags and keep only one that accurately describes the page content with the main keyword included.",
 		});
 	}
 	
@@ -46,9 +46,9 @@ export function checkTitleTag(context: AuditContext) {
 			summary: `Title tag is ${ length } characters long.`,
 			explanation: `Found title: "${ title }". `,
 			recommendation:
-				"Shorten the title so the main keyword and offer are fully visible in search results. Google does not penalize short titles, but titles over ~60 characters will likely be truncated with an ellipsis (...).",
+				"Shorten the title so the main keyword and offer fit within the space Google shows in search results. Google may truncate titles longer than ~60 characters when displaying them on the search results page.",
 			codeExample: "<head>\n  <title>Your Optimized Title (Under 60 chars) - Brand</title>\n</head>",
-			aiPrompt: `The title tag is ${ length } characters which is over the recommended 60 character maximum. Rewrite it to be concise so it does not get truncated in search results.`,
+			aiPrompt: `The title tag is ${ length } characters, which is over the recommended ~60 character maximum. Rewrite it to be concise so it does not get truncated when Google displays it in search results.`,
 		});
 	}
 	

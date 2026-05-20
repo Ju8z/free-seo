@@ -97,9 +97,9 @@ export function checkCanonical(context: AuditContext) {
 			summary: `Canonical URL is relative: ${ canonicalUrl }.`,
 			explanation: `Resolved canonical URL: ${ parsedUrl.href }`,
 			recommendation:
-				"Change the relative canonical URL to an absolute URL (including https:// and the domain). Google strongly recommends absolute canonical URLs to prevent ambiguous resolution across different URL paths.",
+				"Change the relative canonical URL to an absolute URL (including https:// and the domain). Google recommends absolute canonical URLs to prevent ambiguous resolution across different URL paths.",
 			codeExample: `<head>\n  <link rel="canonical" href="https://${domain}/page">\n</head>`,
-			aiPrompt: "The canonical URL is relative instead of absolute. Change it to an absolute URL starting with https:// to avoid ambiguity for search engines.",
+			aiPrompt: "The canonical URL is relative instead of absolute. Change it to an absolute URL starting with https:// so Google can resolve it unambiguously, as recommended in Google's canonicalization documentation.",
 		});
 	}
 	

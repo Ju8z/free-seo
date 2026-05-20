@@ -66,9 +66,9 @@ export async function checkHttpsRedirect(
 				? `Location header: ${ location }`
 				: "No Location header was returned.",
 			recommendation:
-				"Redirect all HTTP requests to the equivalent HTTPS URL with a 301 permanent redirect. Google prioritizes secure sites and browsers flag HTTP as 'Not Secure'.",
-			codeExample: "Apache (.htaccess):\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]\n\nNginx:\nreturn 301 https://$host$request_uri;",
-			aiPrompt: `HTTP is not redirecting to HTTPS properly (current status: ${ response.status }). Configure your server to return a 301 permanent redirect from HTTP to HTTPS URLs.`,
+				"Redirect all HTTP requests to the equivalent HTTPS URL with a permanent 301 or 308 redirect. Google's redirect documentation lists 301 and 308 as the two permanent-redirect status codes; either is suitable for moving traffic from HTTP to HTTPS.",
+			codeExample: "Apache (.htaccess) — 301:\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]\n\nApache (.htaccess) — 308 equivalent:\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=308,L]\n\nNginx — 301:\nreturn 301 https://$host$request_uri;\n\nNginx — 308 equivalent:\nreturn 308 https://$host$request_uri;",
+			aiPrompt: `HTTP is not redirecting to HTTPS properly (current status: ${ response.status }). Configure your server to return a permanent redirect from HTTP to HTTPS using either status 301 or 308 — both are listed by Google as permanent-redirect status codes.`,
 		});
 	} catch (error) {
 		return createCheckResult({
@@ -80,9 +80,9 @@ export async function checkHttpsRedirect(
 				"The HTTP URL could not be checked for an HTTPS redirect.",
 			explanation: `Tested HTTP URL: ${ testedUrl.href }.`,
 			recommendation:
-				"Ensure your server successfully responds to HTTP requests with a permanent redirect to the HTTPS version of the page.",
-			codeExample: "Apache (.htaccess):\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]",
-			aiPrompt: "Unable to verify HTTP to HTTPS redirect. Configure your server to redirect all HTTP requests to HTTPS with a 301 permanent redirect.",
+				"Ensure your server successfully responds to HTTP requests with a permanent 301 or 308 redirect to the HTTPS version of the page.",
+			codeExample: "Apache (.htaccess) — 301:\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]\n\nApache (.htaccess) — 308 equivalent:\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=308,L]",
+			aiPrompt: "Unable to verify HTTP to HTTPS redirect. Configure your server to redirect all HTTP requests to HTTPS using a permanent 301 or 308 redirect — Google's redirect documentation lists both as permanent-redirect status codes.",
 		});
 	}
 }

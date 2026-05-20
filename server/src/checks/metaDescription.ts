@@ -45,11 +45,11 @@ export function checkMetaDescription(context: AuditContext) {
 			category: "Metadata",
 			status: "warning",
 			summary: `Meta description is ${ length } characters long. Recommended maximum ~160 characters.`,
-			explanation: `Found meta description: "${ description }". Google does not penalize short descriptions, but descriptions over ~160 characters will likely be truncated.`,
+			explanation: `Found meta description: "${ description }". Google may truncate descriptions over ~160 characters when generating the snippet shown in search results.`,
 			recommendation:
-				"Shorten the description so it gives a specific page summary within 160 characters.",
+				"Shorten the description so it gives a specific page summary within ~160 characters. Google may truncate longer descriptions when generating the search snippet.",
 			codeExample: "<head>\n  <meta name=\"description\" content=\"Your concise optimized description (under 160 characters)...\">\n</head>",
-			aiPrompt: `The meta description is ${ length } characters which is over the recommended 160 character limit. Rewrite it to be concise so it doesn't get truncated in search results.`,
+			aiPrompt: `The meta description is ${ length } characters, which is over the recommended ~160 character limit. Rewrite it to be concise so Google does not truncate it when generating the search snippet.`,
 		});
 	}
 	

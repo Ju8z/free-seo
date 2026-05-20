@@ -93,16 +93,22 @@ function HowToFixAction({
 }
 
 function buildFixCards(check: SeoCategoryCheck) {
-	const status = check.status === "warning" || check.status === "fail" || check.status === "pass"
+	const baseStatus = check.status === "warning" || check.status === "fail" || check.status === "pass"
 		? check.status
 		: undefined;
 
 	if (check.issues.length > 0) {
+		// An issue is, by definition, a problem to fix. If the parent check
+		// passed overall (e.g. GEO rendering hit >=80% but still surfaced
+		// missing H1s or links), an individual issue card should still
+		// render with warning styling rather than inheriting the pass green.
+		const issueStatus = baseStatus === "pass" ? "warning" : baseStatus;
+
 		return check.issues.map((issue, index) => (
 			<FixCard
 				key={ `${ check.id }-${ index }` }
 				title={ issue }
-				status={ status }
+				status={ issueStatus }
 				explanation={ check.explanation || undefined }
 				recommendation={ getExplanation(check.recommendations, index) }
 				codeExample={ getOptionalIndexedValue(check.codeExamples, index) }
@@ -115,7 +121,7 @@ function buildFixCards(check: SeoCategoryCheck) {
 		<FixCard
 			key={ check.id }
 			title={ check.name }
-			status={ status }
+			status={ baseStatus }
 			explanation={ check.explanation || undefined }
 			recommendation={ check.recommendations[0] || "Follow the guidance below to fix this issue." }
 			codeExample={ check.codeExamples[0] }
