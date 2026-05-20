@@ -19,6 +19,10 @@ export type CheckId =
 	| "structured-data"
 	| "robots-txt"
 	| "blocked-by-robots"
+	| "mobile-viewport"
+	| "crawlable-links"
+	| "image-dimensions"
+	| "search-favicon"
 	| "xml-sitemaps";
 
 export type BaseCheckStatus = "pass" | "warning" | "fail";
@@ -412,6 +416,10 @@ export const checkWeights: Record<CheckId, number> = {
 	"structured-data": 3,
 	"robots-txt": 7,
 	"blocked-by-robots": 10,
+	"mobile-viewport": 8,
+	"crawlable-links": 8,
+	"image-dimensions": 5,
+	"search-favicon": 4,
 	"xml-sitemaps": 7,
 };
 

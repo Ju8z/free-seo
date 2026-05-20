@@ -24,6 +24,7 @@ export const seoCategoryConfigs: SeoCategoryConfig[] = [
 			"hreflang",
 			"language",
 			"canonical",
+			"search-favicon",
 		],
 		displayChecks: [
 			{ id: "serp-snippet-preview", name: "SERP Snippet Preview" },
@@ -41,7 +42,13 @@ export const seoCategoryConfigs: SeoCategoryConfig[] = [
 		label: "Content",
 		description: "Readable content depth, keyword consistency, and image alternative text.",
 		weight: 0.2,
-		checks: ["keyword-consistency", "content-amount", "image-alt"],
+		checks: [
+			"keyword-consistency",
+			"content-amount",
+			"image-alt",
+			"crawlable-links",
+			"image-dimensions",
+		],
 	},
 	{
 		id: "indexing",
@@ -61,7 +68,7 @@ export const seoCategoryConfigs: SeoCategoryConfig[] = [
 		label: "Technical",
 		description: "Transport security, redirects, analytics, and basic technical signals.",
 		weight: 0.15,
-		checks: ["ssl-enabled", "https-redirect", "analytics"],
+		checks: ["ssl-enabled", "https-redirect", "analytics", "mobile-viewport"],
 	},
 	{
 		id: "geo",

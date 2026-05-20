@@ -23,6 +23,10 @@ import { checkStructuredData } from "../checks/structuredData.js";
 import { checkRobotsTxt } from "../checks/robotsTxt.js";
 import { checkBlockedByRobots } from "../checks/blockedByRobots.js";
 import { checkXmlSitemaps } from "../checks/xmlSitemaps.js";
+import { checkMobileViewport } from "../checks/mobileViewport.js";
+import { checkCrawlableLinks } from "../checks/crawlableLinks.js";
+import { checkImageDimensions } from "../checks/imageDimensions.js";
+import { checkSearchFavicon } from "../checks/searchFavicon.js";
 import { buildSerpSnippetPreview } from "./serpPreview.js";
 import { buildGeoReport } from "./geo.js";
 import { buildSeoCategoriesReport } from "./seoCategories.js";
@@ -115,6 +119,10 @@ export async function runAudit(
 		checkStructuredData(context, structuredDataResult),
 		checkRobotsTxt(context),
 		checkBlockedByRobots(context),
+		checkMobileViewport(context),
+		checkCrawlableLinks(context),
+		checkImageDimensions(context),
+		checkSearchFavicon(context),
 	];
 
 	// Run independent async checks in parallel
