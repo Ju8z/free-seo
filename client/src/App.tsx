@@ -60,53 +60,61 @@ export default function App() {
 			<div className="mx-auto max-w-5xl space-y-3">
 				<header className="rounded-xl border border-brand-border bg-brand-surface p-6 shadow-panel">
 					<div className="space-y-4">
-						{/* Title and Badges Row */ }
-						<div className="flex flex-wrap items-center gap-3">
-							<h1 className="-mt-1 text-4xl font-extrabold leading-none text-brand-headline">
-								FREE SEO
+						{/* Logo (left) + badges & description (right) */ }
+						<div className="flex items-stretch gap-4">
+							<h1 className="flex shrink-0 items-center leading-none">
+								<img
+									src="/logo.webp"
+									alt="Free SEO"
+									width={ 970 }
+									height={ 350 }
+									fetchPriority="high"
+									decoding="async"
+									className="h-full max-h-24 w-auto"
+								/>
 							</h1>
-							<div className="flex flex-wrap items-center gap-3">
-								<span
-									className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
-									<CheckIcon/>
-									No cookies
-								</span>
-								<span
-									className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
-									<CheckIcon/>
-									No tracking
-								</span>
-								<span
-									className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
-									<CheckIcon/>
-									GDPR
-								</span>
-								<span
-									className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
-									<CheckIcon/>
-									CCPA
-								</span>
-								<span
-									className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
-									<CheckIcon/>
-									PECR
-								</span>
-								<span
-									className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
-									<CheckIcon/>
-									Open-Source
-								</span>
+							<div className="flex flex-1 flex-col justify-center gap-2 min-w-0">
+								<div className="flex flex-wrap items-center gap-2">
+									<span
+										className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
+										<CheckIcon/>
+										No cookies
+									</span>
+									<span
+										className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
+										<CheckIcon/>
+										No tracking
+									</span>
+									<span
+										className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
+										<CheckIcon/>
+										GDPR
+									</span>
+									<span
+										className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
+										<CheckIcon/>
+										CCPA
+									</span>
+									<span
+										className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
+										<CheckIcon/>
+										PECR
+									</span>
+									<span
+										className="inline-flex items-center gap-1 rounded-md bg-brand-success/10 px-2.5 py-1 text-sm font-medium text-brand-success">
+										<CheckIcon/>
+										Open-Source
+									</span>
+								</div>
+								<p className="text-sm leading-relaxed text-brand-muted">
+									Run a <strong className="text-brand-headline">free, privacy-first SEO audit</strong> on any URL.
+									Instant on-page SEO insights — meta tags, headings, canonical, hreflang,
+									robots, structured data, image alt, and Core Web Vitals signals.
+									No signup. No cookies. No tracking.
+								</p>
 							</div>
 						</div>
-						
-						{/* Hero description for SEO + UX */ }
-						<p className="sr-only">
-							Run a <strong>free, privacy-first SEO audit</strong> on any URL.
-							Instant on-page SEO insights — meta tags, headings, canonical, hreflang,
-							robots, structured data, image alt, and Core Web Vitals signals.
-							No signup. No cookies. No tracking.
-						</p>
-						
+
 						{/* Audit Form and Theme Toggle Row */ }
 						<div className="flex items-start gap-3">
 							<div className="flex-1">
