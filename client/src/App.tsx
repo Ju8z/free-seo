@@ -99,6 +99,14 @@ export default function App() {
 							</div>
 						</div>
 						
+						{/* Hero description for SEO + UX */ }
+						<p className="text-base text-brand-muted max-w-3xl hidden">
+							Run a <strong>free, privacy-first SEO audit</strong> on any URL.
+							Instant on-page SEO insights — meta tags, headings, canonical, hreflang,
+							robots, structured data, image alt, and Core Web Vitals signals.
+							No signup. No cookies. No tracking.
+						</p>
+						
 						{/* Audit Form and Theme Toggle Row */ }
 						<div className="flex items-start gap-3">
 							<div className="flex-1">
@@ -115,7 +123,7 @@ export default function App() {
 						</div>
 					</div>
 				</header>
-				<section>
+				<section aria-label="Audit results">
 					{isLoading && <LoadingBanner />}
 					{!isLoading && !audit && !error && <EmptyState />}
 					{audit && !isLoading && (
