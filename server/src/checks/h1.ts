@@ -28,7 +28,7 @@ export function checkH1(context: AuditContext) {
 			status: "pass",
 			summary: `This page has ${ h1Values.length } H1 tags.`,
 			explanation:
-				"Multiple H1 tags are perfectly valid in HTML5 and are not penalized by Google.",
+				"Multiple H1 tags are valid in HTML5; Google has stated publicly that pages can use any number of H1 tags.",
 			recommendation:
 				"Ensure each H1 accurately describes the section it belongs to.",
 			codeExample: "<article>\n  <h1>Main Topic</h1>\n</article>\n<article>\n  <h1>Another Main Topic</h1>\n</article>",

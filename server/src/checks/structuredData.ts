@@ -32,9 +32,9 @@ export function checkStructuredData(
 					? "Some structured data was detected, but malformed JSON-LD may be ignored by crawlers."
 					: "Structured data was present, but the JSON-LD could not be parsed.",
 			recommendation:
-				"Fix the malformed JSON-LD syntax. Search engines require perfectly formatted JSON-LD to understand the specific entities and qualify the page for Rich Results.",
+				"Fix the malformed JSON-LD syntax. Google can't read invalid JSON-LD, so errors prevent Google from understanding the entities on the page and from making it eligible for Rich Results.",
 			codeExample: '<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "Article",\n  "headline": "Your Article Title",\n  "author": { "@type": "Person", "name": "Author Name" }\n}\n</script>',
-			aiPrompt: `${ summary.invalidJsonLdBlocks } JSON-LD block(s) on this page have syntax errors. Validate and fix the JSON-LD using Google's Rich Results Test or Schema.org validator. Common issues include missing commas, unquoted property names, or invalid @type values.`,
+			aiPrompt: `${ summary.invalidJsonLdBlocks } JSON-LD block(s) on this page have syntax errors that Google can't parse. Validate and fix the JSON-LD using Google's Rich Results Test or the Schema.org validator. Common issues include missing commas, unquoted property names, or invalid @type values.`,
 		});
 	}
 	

@@ -31,6 +31,7 @@ export async function checkGeoRenderedContent(
 	const rawSnapshot = buildSnapshot(context.html, context.finalUrl, context.$);
 	let renderedSnapshot = rawSnapshot;
 	let renderError: string | null = null;
+	let classified: ReturnType<typeof classifyRenderError> | null = null;
 	
 	try {
 		renderedSnapshot = buildSnapshot(
@@ -39,6 +40,7 @@ export async function checkGeoRenderedContent(
 		);
 	} catch (error) {
 		renderError = error instanceof Error ? error.message : "Rendering failed.";
+		classified = classifyRenderError(error);
 	}
 	
 	const renderingPercentage = calculateRenderingPercentage(
@@ -59,10 +61,8 @@ export async function checkGeoRenderedContent(
 	);
 	
 	if (renderError) {
-		issues.push(`JavaScript rendering could not be completed: ${ renderError }`);
-		recommendations.push(
-			"Ensure essential content is present in the initial HTML because browser rendering may fail or be unavailable to AI crawlers.",
-		);
+		issues.push(classified!.userTitle);
+		recommendations.push(classified!.userRecommendation);
 	}
 	
 	if (renderingPercentage < 80) {
@@ -341,4 +341,46 @@ function findRenderedOnlyContent(
 		.map(normalizeWhitespace)
 		.filter((sentence) => sentence.length >= 40 && !rawText.includes(sentence))
 		.slice(0, 5);
+}
+
+function classifyRenderError(error: unknown): {
+	category: "timeout" | "navigation" | "generic";
+	userTitle: string;
+	userRecommendation: string;
+} {
+	const userRecommendation =
+		"The page could not be fully rendered for this audit. Try the audit again, and ensure essential content lives in the initial HTML so AI crawlers and search-engine bots are not gated on JavaScript execution.";
+	
+	const message = error instanceof Error ? error.message : "";
+	
+	const timeoutMatch = message.match(/Timeout (\d+)ms/i);
+	if (timeoutMatch) {
+		const seconds = Math.round(Number(timeoutMatch[1]) / 1000);
+		return {
+			category: "timeout",
+			userTitle: `Page rendering timed out after ${ seconds } seconds.`,
+			userRecommendation,
+		};
+	}
+	if (/timeout/i.test(message)) {
+		return {
+			category: "timeout",
+			userTitle: "Page rendering timed out.",
+			userRecommendation,
+		};
+	}
+	
+	if (/net::ERR_/.test(message) || /ENOTFOUND|ECONNREFUSED|ECONNRESET/.test(message)) {
+		return {
+			category: "navigation",
+			userTitle: "Page rendering could not load the page.",
+			userRecommendation,
+		};
+	}
+	
+	return {
+		category: "generic",
+		userTitle: "Page rendering failed before a snapshot could be captured.",
+		userRecommendation,
+	};
 }
