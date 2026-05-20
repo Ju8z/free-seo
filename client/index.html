@@ -3,19 +3,84 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <title>SEO Checker</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional&subset=latin"
-            rel="stylesheet"
-    />
-    <script>
-        document.documentElement.dataset.theme = "light";
+
+    <!-- Primary SEO -->
+    <title>Free SEO Checker — Audit Any URL Instantly | Free SEO</title>
+    <meta content="Free, privacy-first SEO checker. Audit any URL in seconds — no signup, no cookies, no tracking. Instant on-page SEO, meta, headings, and performance insights."
+          name="description"/>
+    <link href="https://free-seo.click/" rel="canonical"/>
+    <meta content="index, follow, max-image-preview:large, max-snippet:-1" name="robots"/>
+    <meta content="#0f172a" media="(prefers-color-scheme: dark)" name="theme-color"/>
+    <meta content="#ffffff" media="(prefers-color-scheme: light)" name="theme-color"/>
+    <meta content="JuBz.Dev" name="author"/>
+
+    <!-- Open Graph -->
+    <meta content="website" property="og:type"/>
+    <meta content="Free SEO" property="og:site_name"/>
+    <meta content="Free SEO Checker — Audit Any URL Instantly" property="og:title"/>
+    <meta content="Audit any URL in seconds. Privacy-first, no signup, no cookies, no tracking. Instant on-page SEO insights." property="og:description"/>
+    <meta content="https://free-seo.click/" property="og:url"/>
+    <meta content="https://free-seo.click/og-image.png" property="og:image"/>
+    <meta content="1200" property="og:image:width"/>
+    <meta content="630" property="og:image:height"/>
+    <meta content="Free SEO Checker — audit any URL instantly" property="og:image:alt"/>
+    <meta content="en_US" property="og:locale"/>
+
+    <!-- Twitter -->
+    <meta content="summary_large_image" name="twitter:card"/>
+    <meta content="Free SEO Checker — Audit Any URL Instantly" name="twitter:title"/>
+    <meta content="Audit any URL in seconds. Privacy-first, no signup, no cookies, no tracking." name="twitter:description"/>
+    <meta content="https://free-seo.click/og-image.png" name="twitter:image"/>
+    <meta content="Free SEO Checker — audit any URL instantly" name="twitter:image:alt"/>
+
+    <!-- Icons -->
+    <link href="/favicon.ico" rel="icon" sizes="any"/>
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml"/>
+    <link href="/apple-touch-icon.png" rel="apple-touch-icon"/>
+    <link href="/site.webmanifest" rel="manifest"/>
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Free SEO",
+            "url": "https://free-seo.click/",
+            "description": "Free, privacy-first SEO checker. Audit any URL in seconds — no signup, no cookies, no tracking.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "creator": {
+                "@type": "Person",
+                "name": "JuBz"
+            },
+            "license": "https://polyformproject.org/licenses/noncommercial/1.0.0"
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Free SEO",
+            "url": "https://free-seo.click/"
+        }
     </script>
 </head>
 <body class="bg-brand-page text-brand-body min-h-screen">
 <div id="root"></div>
+<noscript>
+    <div style="max-width:720px;margin:2rem auto;padding:0 1rem;font-family:sans-serif">
+        <h1>Free SEO Checker</h1>
+        <p>Run a free, privacy-first SEO audit on any URL. Instant on-page SEO insights — meta tags, headings, canonical, hreflang, robots, structured data,
+            image alt, and Core Web Vitals signals. No signup. No cookies. No tracking.</p>
+        <p>Please enable JavaScript to use this tool.</p>
+    </div>
+</noscript>
 <script src="/src/main.tsx" type="module"></script>
 </body>
 </html>

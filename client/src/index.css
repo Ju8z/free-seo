@@ -96,7 +96,7 @@ html[data-theme="dark"] {
     --color-brand-input: var(--theme-color-brand-input);
     --color-brand-input-disabled: var(--theme-color-brand-input-disabled);
 
-    --font-family-sans: "Inter", "Segoe UI", sans-serif;
+    --font-family-sans: "Inter Variable", "Inter", "Segoe UI", sans-serif;
 
     --shadow-panel: var(--theme-shadow-panel);
     --shadow-glow: var(--theme-shadow-glow);
