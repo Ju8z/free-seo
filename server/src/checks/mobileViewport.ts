@@ -20,9 +20,11 @@ export function checkMobileViewport(context: AuditContext) {
 	}
 	
 	const content = (viewportTag.attr("content") || "").toLowerCase();
-	const hasWidth = content.includes("width=device-width");
-	const hasScale = content.includes("initial-scale=");
-	const restrictsScaling = content.includes("user-scalable=no") || content.includes("user-scalable=0") || /maximum-scale=\s*(0|1(\.0)?)\b/.test(content);
+	const hasWidth = /\bwidth\s*=\s*device-width\b/.test(content);
+	const hasScale = /\binitial-scale\s*=\s*[0-9]*\.?[0-9]+\b/.test(content);
+	const restrictsScaling =
+		/\buser-scalable\s*=\s*(no|0)\b/.test(content) ||
+		/\bmaximum-scale\s*=\s*(0|1(\.0)?)\b/.test(content);
 	
 	if (!hasWidth || !hasScale) {
 		return createCheckResult({

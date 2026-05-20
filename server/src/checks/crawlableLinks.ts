@@ -33,9 +33,10 @@ export function checkCrawlableLinks(context: AuditContext) {
 	
 	links.each((_i, el) => {
 		const href = ($(el).attr("href") || "").trim();
+		const hrefLower = href.toLowerCase();
 		const text = ($(el).text() || "").trim().toLowerCase();
 		
-		if (!href || href.startsWith("javascript:") || href.startsWith("void(")) {
+		if (!href || hrefLower.startsWith("javascript:") || hrefLower.startsWith("void(")) {
 			uncrawlableCount++;
 		}
 		
