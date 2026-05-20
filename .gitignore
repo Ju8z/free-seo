@@ -17,3 +17,4 @@ server/data/
 .zed/
 client/node_modules/
 client/dist/
+.vscode/
