@@ -60,9 +60,9 @@ export async function checkGeoRenderedContent(
 		renderedSnapshot.mainText || renderedSnapshot.text,
 	);
 	
-	if (renderError) {
-		issues.push(classified!.userTitle);
-		recommendations.push(classified!.userRecommendation);
+	if (renderError && classified) {
+		issues.push(classified.userTitle);
+		recommendations.push(classified.userRecommendation);
 	}
 	
 	if (renderingPercentage < 80) {
