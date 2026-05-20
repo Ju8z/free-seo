@@ -100,7 +100,7 @@ export default function App() {
 						</div>
 						
 						{/* Hero description for SEO + UX */ }
-						<p className="text-base text-brand-muted max-w-3xl hidden">
+						<p className="sr-only">
 							Run a <strong>free, privacy-first SEO audit</strong> on any URL.
 							Instant on-page SEO insights — meta tags, headings, canonical, hreflang,
 							robots, structured data, image alt, and Core Web Vitals signals.
