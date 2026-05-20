@@ -10,34 +10,45 @@
           name="description"/>
     <link href="https://free-seo.click/" rel="canonical"/>
     <meta content="index, follow, max-image-preview:large, max-snippet:-1" name="robots"/>
-    <meta content="#0f172a" media="(prefers-color-scheme: dark)" name="theme-color"/>
+
+    <!-- Theme color: default first, then media-specific overrides -->
+    <meta content="#ffffff" name="theme-color"/>
     <meta content="#ffffff" media="(prefers-color-scheme: light)" name="theme-color"/>
+    <meta content="#0f172a" media="(prefers-color-scheme: dark)" name="theme-color"/>
+
     <meta content="JuBz.Dev" name="author"/>
 
     <!-- Open Graph -->
     <meta content="website" property="og:type"/>
     <meta content="Free SEO" property="og:site_name"/>
     <meta content="Free SEO Checker — Audit Any URL Instantly" property="og:title"/>
-    <meta content="Audit any URL in seconds. Privacy-first, no signup, no cookies, no tracking. Instant on-page SEO insights." property="og:description"/>
+    <meta content="Audit any URL in seconds. Privacy-first, no signup, no cookies, no tracking. Instant on-page SEO insights."
+          property="og:description"/>
     <meta content="https://free-seo.click/" property="og:url"/>
     <meta content="https://free-seo.click/og-image.png" property="og:image"/>
+    <meta content="https://free-seo.click/og-image.png" property="og:image:secure_url"/>
+    <meta content="image/png" property="og:image:type"/>
     <meta content="1200" property="og:image:width"/>
     <meta content="630" property="og:image:height"/>
     <meta content="Free SEO Checker — audit any URL instantly" property="og:image:alt"/>
     <meta content="en_US" property="og:locale"/>
 
-    <!-- Twitter -->
+    <!-- Twitter / X -->
     <meta content="summary_large_image" name="twitter:card"/>
     <meta content="Free SEO Checker — Audit Any URL Instantly" name="twitter:title"/>
-    <meta content="Audit any URL in seconds. Privacy-first, no signup, no cookies, no tracking." name="twitter:description"/>
+    <meta content="Audit any URL in seconds. Privacy-first, no signup, no cookies, no tracking."
+          name="twitter:description"/>
     <meta content="https://free-seo.click/og-image.png" name="twitter:image"/>
     <meta content="Free SEO Checker — audit any URL instantly" name="twitter:image:alt"/>
 
     <!-- Icons -->
-    <link href="/favicon.ico" rel="icon" sizes="any"/>
     <link href="/favicon.svg" rel="icon" type="image/svg+xml"/>
-    <link href="/apple-touch-icon.png" rel="apple-touch-icon"/>
+    <link href="/favicon.png" rel="icon" type="image/png"/>
+    <link href="/favicon_192.png" rel="apple-touch-icon" sizes="192x192"/>
     <link href="/site.webmanifest" rel="manifest"/>
+
+    <!-- Preload the LCP logo so it paints as soon as possible -->
+    <link as="image" fetchpriority="high" href="/logo.webp" rel="preload" type="image/webp"/>
 
     <!-- Structured data -->
     <script type="application/ld+json">
@@ -45,9 +56,13 @@
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "Free SEO",
+            "alternateName": "Free SEO Checker",
             "url": "https://free-seo.click/",
+            "image": "https://free-seo.click/logo.webp",
+            "logo": "https://free-seo.click/logo.webp",
             "description": "Free, privacy-first SEO checker. Audit any URL in seconds — no signup, no cookies, no tracking.",
             "applicationCategory": "DeveloperApplication",
+            "applicationSubCategory": "SEO Tool",
             "operatingSystem": "Any",
             "browserRequirements": "Requires JavaScript",
             "offers": {
@@ -57,9 +72,28 @@
             },
             "creator": {
                 "@type": "Person",
-                "name": "JuBz"
+                "name": "JuBz.Dev",
+                "url": "https://github.com/Ju8z"
             },
-            "license": "https://polyformproject.org/licenses/noncommercial/1.0.0"
+            "license": "https://polyformproject.org/licenses/noncommercial/1.0.0",
+            "isAccessibleForFree": true
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Free SEO",
+            "url": "https://free-seo.click/",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://free-seo.click/logo.webp",
+                "width": 970,
+                "height": 350
+            },
+            "sameAs": [
+                "https://github.com/Ju8z/free-seo"
+            ]
         }
     </script>
     <script type="application/ld+json">
@@ -67,8 +101,20 @@
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Free SEO",
-            "url": "https://free-seo.click/"
+            "url": "https://free-seo.click/",
+            "inLanguage": "en"
         }
+    </script>
+
+    <script>
+		(function() {
+			try {
+				var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+				document.documentElement.dataset.theme = prefersDark ? "dark" : "light";
+			} catch (e) {
+				document.documentElement.dataset.theme = "light";
+			}
+		})();
     </script>
 </head>
 <body class="bg-brand-page text-brand-body min-h-screen">
