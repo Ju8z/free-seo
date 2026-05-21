@@ -107,6 +107,7 @@ function buildFixCards(check: SeoCategoryCheck) {
 		return check.issues.map((issue, index) => (
 			<FixCard
 				key={ `${ check.id }-${ index }` }
+				id={ check.id }
 				title={ issue }
 				status={ issueStatus }
 				explanation={ check.explanation || undefined }
@@ -120,6 +121,7 @@ function buildFixCards(check: SeoCategoryCheck) {
 	return [
 		<FixCard
 			key={ check.id }
+			id={ check.id }
 			title={ check.name }
 			status={ baseStatus }
 			explanation={ check.explanation || undefined }

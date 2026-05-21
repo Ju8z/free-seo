@@ -146,13 +146,36 @@ const CheckChip = memo(function CheckChip({
 }) {
 	const showScore = check.score < 100 && check.status !== "not_applicable";
 	const scoreSuffix = showScore ? ` (${check.score})` : "";
+	
+	const isClickable = check.status === "warning" || check.status === "fail";
+	
+	const handleClick = () => {
+		if (!isClickable) return;
+		const checkId = check.id;
+		
+		// Dispatch custom event to expand the card
+		window.dispatchEvent(new CustomEvent("expand-fix-card", { detail: { checkId } }));
+		
+		// Open parent <details> and scroll to element
+		setTimeout(() => {
+			const element = document.querySelector(`[data-fix-card-id="${ checkId }"]`);
+			if (element) {
+				const details = element.closest("details");
+				if (details) {
+					details.open = true;
+				}
+				element.scrollIntoView({ behavior: "smooth", block: "center" });
+			}
+		}, 50);
+	};
 
 	return (
 		<span className="relative inline-flex">
 			<StatusBadge
 				status={ check.status }
 				classMap={ categoryCheckStatusClasses }
-				className={`pl-2.5 ${canToggle ? "pr-7" : "pr-2.5"} py-1 ${isExcluded ? "opacity-40" : ""}`}
+				className={ `pl-2.5 ${ canToggle ? "pr-7" : "pr-2.5" } py-1 ${ isExcluded ? "opacity-40" : "" } ${ isClickable ? "cursor-pointer hover:opacity-85 transition-opacity" : "" }` }
+				onClick={ handleClick }
 			>
 				{ check.name }: { formatStatusLabel(check.status) }{ scoreSuffix }
 			</StatusBadge>
@@ -160,7 +183,7 @@ const CheckChip = memo(function CheckChip({
 				<button
 					type="button"
 					onClick={(e) => { e.stopPropagation(); onToggle(); }}
-					className="absolute top-1 right-1 rounded p-0.5 text-brand-muted hover:text-brand-headline transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent/30"
+					className="absolute top-1/2 -translate-y-1/2 right-1 rounded p-0.5 text-brand-muted hover:text-brand-headline transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent/30"
 					aria-label={isExcluded ? "Include in score" : "Exclude from score"}
 				>
 					{isExcluded ? <EyeOffIcon /> : <EyeIcon />}
