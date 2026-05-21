@@ -14,7 +14,13 @@ const categoryOrder = [
 	"content",
 	"indexing",
 	"technical",
-	"geo",
+	"pagespeed",
+	"geo", //TODO: rethink both views to be more informative
+	// "social" is intentionally rendered by SocialResultsSection (the
+	// richer dedicated card with chips, detected URLs, metrics, and
+	// per-check action panels) and is therefore omitted here so the
+	// generic SeoCategoryCard does not produce a duplicate "Social" card
+	// in the same view.
 ] as const;
 
 export default memo(function SeoCategoryCards({

@@ -71,6 +71,13 @@ export const seoCategoryConfigs: SeoCategoryConfig[] = [
 		checks: ["ssl-enabled", "https-redirect", "analytics", "mobile-viewport"],
 	},
 	{
+		id: "pagespeed",
+		label: "Page Speed",
+		description: "Desktop and Mobile PageSpeed index audits and diagnostics.",
+		weight: 0.1,
+		checks: ["pagespeed-desktop", "pagespeed-mobile"],
+	},
+	{
 		id: "geo",
 		label: "Generative Engine Optimization",
 		description: "AI crawler readability, entity identity, and llms.txt guidance.",
@@ -81,7 +88,7 @@ export const seoCategoryConfigs: SeoCategoryConfig[] = [
 		id: "social",
 		label: "Social",
 		description: "Social media presence, Open Graph / X Card tags, and platform integration.",
-		weight: 0,
+		weight: 0.1,
 		checks: [],
 	},
 ];

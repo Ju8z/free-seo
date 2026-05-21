@@ -1,16 +1,16 @@
 import { seoCategoryConfigs } from "./seoCategoryConfig.js";
 import { getCheckScore, getCheckWeight, statusMultipliers } from "./score.js";
 import type {
-  CheckId,
-  CheckResult,
-  BaseCheckStatus,
-  GeoReport,
-  SeoCategoriesReport,
-  SeoCategoryCheck,
-  SeoCategoryResult,
-  SeoCategoryStatus,
-  SocialCheckItem,
-  SocialResultsReport,
+	BaseCheckStatus,
+	CheckId,
+	CheckResult,
+	GeoReport,
+	SeoCategoriesReport,
+	SeoCategoryCheck,
+	SeoCategoryResult,
+	SeoCategoryStatus,
+	SocialCheckItem,
+	SocialResultsReport,
 } from "../types.js";
 import { getAuditStatus } from "../types.js";
 
@@ -152,7 +152,7 @@ export function calculateOverallCategoryScore(
   categories: SeoCategoryResult[],
 ): number {
   const includedCategories = categories.filter(
-    (category) => !category.excludedFromOverall,
+	  (category) => !category.excludedFromOverall,
   );
   const totalWeight = includedCategories.reduce(
     (total, category) => total + category.weight,
@@ -509,7 +509,7 @@ function buildSocialCategory(
       categoryChecks.flatMap((check) => check.recommendations),
     ),
     prompts: [],
-    excludedFromOverall: true,
+	  excludedFromOverall: false,
   };
 }
 

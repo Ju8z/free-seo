@@ -10,6 +10,7 @@ const categoryOrder = [
 	"content",
 	"indexing",
 	"technical",
+	"pagespeed",
 	"geo",
 	"social",
 ] as const;
