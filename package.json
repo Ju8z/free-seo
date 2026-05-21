@@ -1,5 +1,6 @@
 {
   "name": "free-seo",
+  "version": "0.1",
   "private": true,
   "workspaces": [
     "client",
@@ -8,9 +9,12 @@
   "scripts": {
     "dev": "npm run dev -w client",
     "build": "npm run build -w client",
-    "start": "npm run start -w server"
+    "start": "npm run start -w server",
+    "prepare": "husky",
+    "update-version": "node scripts/update-version.js"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "typescript": "^6.0.3"
   }
 }
