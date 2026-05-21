@@ -15,8 +15,7 @@ const categoryOrder = [
 	"indexing",
 	"technical",
 	"pagespeed",
-	"geo",
-	"social",
+	"geo", //TODO: rethink both views to be more informative
 	// "social" is intentionally rendered by SocialResultsSection (the
 	// richer dedicated card with chips, detected URLs, metrics, and
 	// per-check action panels) and is therefore omitted here so the
