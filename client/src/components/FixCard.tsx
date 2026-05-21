@@ -70,10 +70,10 @@ export default memo( function FixCard( {
 
   return (
 	  <article data-fix-card-id={ id } className="overflow-hidden rounded-xl border border-brand-border bg-brand-surface">
-		  <header
+		  <button
+			  type="button"
 			  onClick={ () => setIsExpanded(!isExpanded) }
-			  className={ `px-4 py-3 flex items-center justify-between cursor-pointer select-none transition-opacity hover:opacity-90 ${ isExpanded ? "border-b" : "" } ${ headerClass }` }
-			  role="button"
+			  className={ `w-full appearance-none bg-transparent border-0 px-4 py-3 flex items-center justify-between cursor-pointer select-none transition-opacity hover:opacity-90 ${ isExpanded ? "border-b" : "" } ${ headerClass }` }
 			  aria-expanded={ isExpanded }
 		  >
 			  <h4 className="flex items-center gap-2 font-semibold text-sm leading-snug pr-4">
@@ -81,7 +81,7 @@ export default memo( function FixCard( {
 			    <span>{ title }</span>
         </h4>
 			  <ChevronIcon isExpanded={ isExpanded }/>
-      </header>
+      </button>
 		  { isExpanded && (
 			  <div>
 				  <section className={ hasFixContent ? "border-b border-brand-border px-4 py-3" : "px-4 py-3" }>

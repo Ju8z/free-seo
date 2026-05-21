@@ -14,13 +14,16 @@ export default memo(function StatusBadge<TStatus extends string>({
 	className?: string;
 	onClick?: () => void;
 }) {
+	const Element = onClick ? "button" : "span";
+	const buttonProps = onClick ? { type: "button" as const, onClick } : {};
+
 	return (
-		<span
-			onClick={ onClick }
-			className={ `inline-flex items-center gap-1.5 rounded-full text-xs font-bold ${ className } ${ classMap[status] }` }
+		<Element
+			{ ...buttonProps }
+			className={ `inline-flex items-center gap-1.5 rounded-full text-xs font-bold appearance-none bg-transparent border-0 p-0 ${ className } ${ classMap[status] } ${ onClick ? "cursor-pointer" : "" }` }
 		>
 			<StatusIcon status={ status }/>
 			{ children }
-		</span>
+		</Element>
 	);
 });
