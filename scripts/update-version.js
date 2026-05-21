@@ -4,7 +4,14 @@ const path = require('path');
 
 function incrementVersion(version) {
 	const parts = (version || '0.0').split('.');
-	parts[parts.length - 1] = String(Number(parts[parts.length - 1]) + 1);
+	const lastPart = parts[parts.length - 1];
+
+	// Validate that the last segment is a numeric integer
+	if (!/^\d+$/.test(lastPart)) {
+		throw new Error(`Invalid version format: last segment "${ lastPart }" is not a numeric integer`);
+	}
+
+	parts[parts.length - 1] = String(Number(lastPart) + 1);
 	return parts.join('.');
 }
 

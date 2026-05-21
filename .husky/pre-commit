@@ -1,2 +1,8 @@
-npm run update-version
-git add client/src/version.ts
+#!/bin/sh
+
+# Only update version on main branch (typically during merges)
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+if [ "$BRANCH" = "main" ]; then
+  npm run update-version
+  git add package.json client/src/version.ts
+fi
