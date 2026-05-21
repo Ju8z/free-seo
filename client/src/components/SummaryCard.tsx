@@ -1,11 +1,15 @@
 import { memo } from "react";
-import type { AuditReport } from "../../../shared/types";
+import type { AuditReport, CheckStatus } from "../../../shared/types";
 import StatusTags from "./StatusTags";
 
 export default memo(function SummaryCard({
 	audit,
+	selectedStatus,
+	onSelectStatus,
 }: {
 	audit: AuditReport;
+	selectedStatus?: CheckStatus | null;
+	onSelectStatus?: (status: CheckStatus) => void;
 }) {
 	return (
 		<div className="h-full rounded-xl border border-brand-border bg-brand-surface p-6 shadow-panel">
@@ -21,7 +25,11 @@ export default memo(function SummaryCard({
 				{ audit.finalUrl }
 			</a>
 			<div className="mt-3">
-				<StatusTags statusSummary={ audit.statusSummary }/>
+				<StatusTags
+					statusSummary={ audit.statusSummary }
+					selectedStatus={ selectedStatus }
+					onSelectStatus={ onSelectStatus }
+				/>
 			</div>
 		</div>
 	);

@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from "react";
-import type { AuditReport } from "../../../shared/types";
+import type { AuditReport, CheckStatus } from "../../../shared/types";
 import SummaryCard from "./SummaryCard";
 import NotesList from "./NotesList";
 import SerpSnippetPreview from "./SerpSnippetPreview";
@@ -13,6 +13,7 @@ export default memo(function ResultsView({
 	audit: AuditReport;
 }) {
 	const [excludedCheckIds, setExcludedCheckIds] = useState<Set<string>>(new Set());
+	const [selectedStatus, setSelectedStatus] = useState<CheckStatus | null>(null);
 
 	const toggleCheckExclusion = useCallback((id: string) => {
 		setExcludedCheckIds((prev) => {
@@ -22,15 +23,27 @@ export default memo(function ResultsView({
 			return next;
 		});
 	}, []);
+	
+	const handleStatusSelect = useCallback((status: CheckStatus) => {
+		setSelectedStatus((prev) => (prev === status ? null : status));
+	}, []);
 
 	return (
 		<div className="animate-reveal space-y-3">
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-3">
 				<div className="md:col-span-3">
-					<SeoScoreOverview seoCategories={ audit.seoCategories } excludedCheckIds={ excludedCheckIds }/>
+					<SeoScoreOverview
+						seoCategories={ audit.seoCategories }
+						excludedCheckIds={ excludedCheckIds }
+						selectedStatus={ selectedStatus }
+					/>
 				</div>
 				<div className="md:col-span-1">
-					<SummaryCard audit={ audit }/>
+					<SummaryCard
+						audit={ audit }
+						selectedStatus={ selectedStatus }
+						onSelectStatus={ handleStatusSelect }
+					/>
 				</div>
 			</div>
 			

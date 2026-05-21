@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 import { fetchPage } from "./fetchPage.js";
 import { fetchRobotsTxt } from "./robots.js";
 import { normalizeInput } from "./normalizeInput.js";
-import { summarizeStatuses } from "./score.js";
+
 import { countWords, extractVisibleText, normalizeWhitespace } from "../utils/text.js";
 import { checkTitleTag } from "../checks/titleTag.js";
 import { checkMetaDescription } from "../checks/metaDescription.js";
@@ -147,6 +147,15 @@ export async function runAudit(
 	];
 
 	const seoCategories = buildSeoCategoriesReport(checks, geo, socialResults, page.finalUrl);
+	
+	const statusSummary = { pass: 0, warning: 0, fail: 0, info: 0 };
+	for (const cat of Object.values(seoCategories.categories)) {
+		const s = cat.statusSummary;
+		statusSummary.pass += s.pass;
+		statusSummary.warning += s.warning;
+		statusSummary.fail += s.fail;
+		statusSummary.info += s.not_applicable + s.unavailable;
+	}
 
 	return {
 		input: page.input,
@@ -158,7 +167,7 @@ export async function runAudit(
 		seoCategories,
 		socialResults,
 		score: seoCategories.overallScore,
-		statusSummary: summarizeStatuses(checks),
+		statusSummary,
 		checks,
 		notes: buildNotes(context),
 	};
