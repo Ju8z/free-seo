@@ -160,6 +160,22 @@ PLAYWRIGHT_IDLE_TIMEOUT=300000
 
 ---
 
+### PageSpeed Insights API
+
+#### `PAGESPEED_API_KEY`
+- **Type:** String (Optional)
+- **Default:** None
+- **Description:** API key used for the Google PageSpeed Insights (PSI) checks for Desktop and Mobile strategies.
+- **Impact:** Without a key, audits are made using Google's public rate-limited quota. For high-volume automated checking or production environments, providing a key prevents potential rate limit blockages.
+- **Recommendations:** Get a free API key from the Google PageSpeed Insights documentation.
+
+**Example:**
+```env
+PAGESPEED_API_KEY=AIzaSyYourKeyHere
+```
+
+---
+
 ## Configuration Presets
 
 ### Low Traffic (1-10 concurrent users)

@@ -10,6 +10,7 @@ const categoryOrder = [
 	"content",
 	"indexing",
 	"technical",
+	"pagespeed",
 	"geo",
 	"social",
 ] as const;
@@ -65,7 +66,7 @@ export default memo(function SeoScoreOverview({
 	seoCategories: SeoCategoriesReport;
 	excludedCheckIds: Set<string>;
 }) {
-	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
+	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set(["social"]));
 
 	const toggleCategory = useCallback((id: string) => {
 		setHiddenIds((prev) => {

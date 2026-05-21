@@ -27,6 +27,7 @@ import { checkMobileViewport } from "../checks/mobileViewport.js";
 import { checkCrawlableLinks } from "../checks/crawlableLinks.js";
 import { checkImageDimensions } from "../checks/imageDimensions.js";
 import { checkSearchFavicon } from "../checks/searchFavicon.js";
+import { checkPageSpeed } from "../checks/pageSpeed.js";
 import { buildSerpSnippetPreview } from "./serpPreview.js";
 import { buildGeoReport } from "./geo.js";
 import { buildSeoCategoriesReport } from "./seoCategories.js";
@@ -126,10 +127,12 @@ export async function runAudit(
 	];
 
 	// Run independent async checks in parallel
-	const [sslResult, httpsResult, sitemapsResult, geo, socialResults] = await Promise.all([
+	const [sslResult, httpsResult, sitemapsResult, pagespeedDesktopResult, pagespeedMobileResult, geo, socialResults] = await Promise.all([
 		checkSslEnabled(context),
 		checkHttpsRedirect(context),
 		checkXmlSitemaps(context),
+		checkPageSpeed(context, "desktop"),
+		checkPageSpeed(context, "mobile"),
 		buildGeoReport(context, structuredDataResult),
 		buildSocialResultsReport(context),
 	]);
@@ -139,6 +142,8 @@ export async function runAudit(
 		sslResult,
 		httpsResult,
 		sitemapsResult,
+		pagespeedDesktopResult,
+		pagespeedMobileResult,
 	];
 
 	const seoCategories = buildSeoCategoriesReport(checks, geo, socialResults, page.finalUrl);

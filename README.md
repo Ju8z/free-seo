@@ -12,7 +12,7 @@ The "Recommendations" are taken from Google SEO Documentation.
 
 ## Features
 
-- **23 SEO checks** across 7 categories with weighted scoring
+- **25 SEO checks** across 7 categories with weighted scoring
 - **Generative Engine Optimization (GEO)** — identity schema detection, JS-dependent content analysis via Playwright, and llms.txt validation
 - **Social presence detection** — Facebook, X, Instagram, LinkedIn, YouTube links, Open Graph / X Card tags, Facebook Pixel
 - **SERP snippet preview** — simulated Google search result display
@@ -260,6 +260,8 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | HTTPS Redirect | HTTP → HTTPS redirect from the non-secure origin |
 | Analytics | GA4, Google Tag Manager, or Universal Analytics detection |
 | Mobile Viewport | Presence and correctness of the `<meta name="viewport">` tag |
+| PageSpeed Desktop | Performance audit score and core diagnostics for desktop devices |
+| PageSpeed Mobile | Performance audit score and core diagnostics for mobile devices |
 
 ### Generative Engine Optimization (weight 0.10)
 | Check | What it does |

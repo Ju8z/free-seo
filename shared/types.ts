@@ -23,6 +23,8 @@ export type CheckId =
 	| "crawlable-links"
 	| "image-dimensions"
 	| "search-favicon"
+	| "pagespeed-desktop"
+	| "pagespeed-mobile"
 	| "xml-sitemaps";
 
 export type BaseCheckStatus = "pass" | "warning" | "fail";
@@ -34,7 +36,8 @@ export type CheckCategory =
 	| "Structure"
 	| "Content"
 	| "Indexing"
-	| "Technical";
+	| "Technical"
+	| "Page Speed";
 
 export interface CheckResult {
 	id: CheckId;
@@ -89,6 +92,7 @@ export type SeoCategoryId =
 	| "content"
 	| "indexing"
 	| "technical"
+	| "pagespeed"
 	| "geo"
 	| "social";
 
@@ -420,6 +424,8 @@ export const checkWeights: Record<CheckId, number> = {
 	"crawlable-links": 8,
 	"image-dimensions": 5,
 	"search-favicon": 4,
+	"pagespeed-desktop": 5,
+	"pagespeed-mobile": 5,
 	"xml-sitemaps": 7,
 };
 

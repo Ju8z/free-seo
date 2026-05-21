@@ -14,7 +14,9 @@ const categoryOrder = [
 	"content",
 	"indexing",
 	"technical",
+	"pagespeed",
 	"geo",
+	"social",
 ] as const;
 
 export default memo(function SeoCategoryCards({
