@@ -14,10 +14,23 @@ export default memo(function StatusBadge<TStatus extends string>({
 	className?: string;
 	onClick?: () => void;
 }) {
+	const interactive = Boolean(onClick);
 	return (
 		<span
 			onClick={ onClick }
-			className={ `inline-flex items-center gap-1.5 rounded-full text-xs font-bold ${ className } ${ classMap[status] }` }
+			onKeyDown={
+				interactive
+					? (e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							onClick!();
+						}
+					}
+					: undefined
+			}
+			tabIndex={ interactive ? 0 : undefined }
+			role={ interactive ? "button" : undefined }
+			className={ `inline-flex items-center gap-1.5 rounded-full text-xs font-bold ${ className } ${ classMap[status] }${ interactive ? " cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-accent/30" : "" }` }
 		>
 			<StatusIcon status={ status }/>
 			{ children }
