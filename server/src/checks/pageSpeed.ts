@@ -101,7 +101,10 @@ export async function checkPageSpeed(
 		}
 		
 		const score = Math.round(data.lighthouseResult.categories.performance.score * 100);
-		const cruxAssessment = data.loadingExperience?.assessment || "NO_DATA";
+		const cruxAssessment =
+			data.loadingExperience?.overall_category
+			|| data.originLoadingExperience?.overall_category
+			|| "NO_DATA";
 		
 		const audits = data.lighthouseResult.audits || {};
 		const fcp = audits["first-contentful-paint"]?.displayValue || "N/A";

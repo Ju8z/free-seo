@@ -152,7 +152,7 @@ export function calculateOverallCategoryScore(
   categories: SeoCategoryResult[],
 ): number {
   const includedCategories = categories.filter(
-	  (category) => !category.excludedFromOverall && category.id !== "social",
+	  (category) => !category.excludedFromOverall,
   );
   const totalWeight = includedCategories.reduce(
     (total, category) => total + category.weight,

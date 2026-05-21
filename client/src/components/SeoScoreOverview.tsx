@@ -66,7 +66,7 @@ export default memo(function SeoScoreOverview({
 	seoCategories: SeoCategoriesReport;
 	excludedCheckIds: Set<string>;
 }) {
-	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set(["social"]));
+	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
 
 	const toggleCategory = useCallback((id: string) => {
 		setHiddenIds((prev) => {
