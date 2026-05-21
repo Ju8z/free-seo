@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { releaseVersion } from "../version";
 
 export default memo(function Footer() {
 	return (
@@ -77,7 +78,7 @@ export default memo(function Footer() {
 			{/* Bottom Bar */ }
 			<div className="mt-8 border-t border-brand-border pt-6 text-center">
 				<p className="text-xs text-brand-muted">
-					© { new Date().getFullYear() } Free SEO. Developed by JuBz. Licensed under{ " " }
+					© { new Date().getFullYear() } Free SEO. Developed by JuBz v{releaseVersion} Licensed under{ " " }
 					<a
 						href="https://polyformproject.org/licenses/noncommercial/1.0.0"
 						target="_blank"
@@ -92,7 +93,7 @@ export default memo(function Footer() {
 					<a
 						href="https://developers.google.com/search/docs"
 						target="_blank"
-						rel="noopener noreferrer"
+						rel="noopener"
 						className="text-brand-accent transition hover:underline"
 					>
 						Google SEO Documentation
