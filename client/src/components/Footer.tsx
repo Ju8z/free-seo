@@ -93,7 +93,7 @@ export default memo(function Footer() {
 					<a
 						href="https://developers.google.com/search/docs"
 						target="_blank"
-						rel="noopener"
+						rel="noopener noreferrer"
 						className="text-brand-accent transition hover:underline"
 					>
 						Google SEO Documentation
