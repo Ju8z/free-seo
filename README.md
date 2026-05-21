@@ -12,14 +12,15 @@ The "Recommendations" are taken from Google SEO Documentation.
 
 ## Features
 
-- **25 SEO checks** across 7 categories with weighted scoring
+- **25 SEO checks** across 7 categories with calibrated weighted scoring
+- **Interactive status filtering** — click on any status badge (Pass, Warning, Fail, Info) to view matching checks grouped by category in a scrollable panel
+- **Interactive category toggling** — hide or show categories to dynamically recalculate the overall score
 - **Generative Engine Optimization (GEO)** — identity schema detection, JS-dependent content analysis via Playwright, and llms.txt validation
 - **Social presence detection** — Facebook, X, Instagram, LinkedIn, YouTube links, Open Graph / X Card tags, Facebook Pixel
 - **SERP snippet preview** — simulated Google search result display
 - **Real-time audit counter** via Server-Sent Events
 - **IP-based rate limiting** with configurable cooldown
 - **Dark / light theme** with smooth CSS gradients
-- **Interactive category toggling** — hide or show categories to recalculate the overall score
 - **⚡ Performance optimized** — Handles 50+ concurrent users with browser pooling and HTTP connection reuse
 
 ## Requirements
@@ -126,8 +127,8 @@ Open `http://localhost:5173`.
 ## Production
 
 ```bash
-# Build the client
-npm run build -w client
+# Build the client (also automatically increments version and updates version.ts)
+npm run build
 
 # Start the server (serves API + built client on port 80)
 npm start
@@ -136,6 +137,10 @@ npm start
 Open `http://localhost:80`.
 
 The Express server serves the API endpoints and the built client from `client/dist/` with an SPA fallback.
+
+### Versioning
+
+The build process automatically increments the project version in `package.json` and generates `client/src/version.ts` with the new version and current git commit hash (e.g. `0.8-b84d724`). This version is displayed in the client UI. A Git pre-commit hook is also configured to update the versioning information automatically before commits.
 
 ### Docker Deployment
 
@@ -210,7 +215,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 
 ### Scoring
 
-- Each check has a **weight** (e.g., title tag = 9, SSL = 10, analytics = 0)
+- Each check has a **weight** representing its relative SEO importance (e.g., SSL = 10, Title Tag = 9, Mobile Page Speed = 7, Meta Description = 6, Structured Data = 5, Analytics = 0)
 - Each status has a **multiplier**: pass = 1.0, warning = 0.5, fail = 0.0, info = 1.0
 - Category score = `(earned / possible) × 100`
 - Overall score = weighted average of category scores, clamped to 0–100

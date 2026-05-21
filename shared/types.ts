@@ -403,7 +403,7 @@ export interface SitemapProbeResult {
 
 export const checkWeights: Record<CheckId, number> = {
 	"title-tag": 9,
-	"meta-description": 8,
+	"meta-description": 6,
 	hreflang: 3,
 	language: 4,
 	h1: 6,
@@ -417,7 +417,7 @@ export const checkWeights: Record<CheckId, number> = {
 	"ssl-enabled": 10,
 	"https-redirect": 8,
 	analytics: 0,
-	"structured-data": 3,
+	"structured-data": 5,
 	"robots-txt": 7,
 	"blocked-by-robots": 10,
 	"mobile-viewport": 8,
@@ -425,7 +425,7 @@ export const checkWeights: Record<CheckId, number> = {
 	"image-dimensions": 5,
 	"search-favicon": 4,
 	"pagespeed-desktop": 5,
-	"pagespeed-mobile": 5,
+	"pagespeed-mobile": 7,
 	"xml-sitemaps": 7,
 };
 
