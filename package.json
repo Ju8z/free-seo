@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "dev": "npm run dev -w client",
-    "build": "npm run build -w client",
+    "build": "npm run update-version && npm run build -w client",
     "start": "npm run start -w server",
     "prepare": "husky",
     "update-version": "node scripts/update-version.js"

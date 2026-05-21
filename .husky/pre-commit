@@ -1,0 +1,2 @@
+npm run update-version
+git add client/src/version.ts
