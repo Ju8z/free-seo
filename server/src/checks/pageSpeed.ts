@@ -99,23 +99,32 @@ export async function checkPageSpeed(
 		if (!data?.lighthouseResult?.categories?.performance) {
 			throw new Error("Invalid response format from PageSpeed Insights API.");
 		}
-		
-		const score = Math.round(data.lighthouseResult.categories.performance.score * 100);
+
+		const performanceScore = data.lighthouseResult.categories.performance.score;
+		let score: number | null;
+		let status: CheckResult["status"];
+
+		if (typeof performanceScore === "number") {
+			score = Math.round(performanceScore * 100);
+			status = "pass";
+			if (score < 50) {
+				status = "fail";
+			} else if (score < 90) {
+				status = "warning";
+			}
+		} else {
+			score = null;
+			status = "fail";
+		}
+
 		const cruxAssessment = data.loadingExperience?.assessment || "NO_DATA";
-		
+
 		const audits = data.lighthouseResult.audits || {};
 		const fcp = audits["first-contentful-paint"]?.displayValue || "N/A";
 		const lcp = audits["largest-contentful-paint"]?.displayValue || "N/A";
 		const cls = audits["cumulative-layout-shift"]?.displayValue || "N/A";
 		const tbt = audits["total-blocking-time"]?.displayValue || "N/A";
 		const speedIndex = audits["speed-index"]?.displayValue || "N/A";
-		
-		let status: CheckResult["status"] = "pass";
-		if (score < 50) {
-			status = "fail";
-		} else if (score < 90) {
-			status = "warning";
-		}
 		
 		const allFailingAudits: { id: string; title: string; score: number; displayValue?: string; description: string }[] = [];
 		for (const [auditId, audit] of Object.entries(audits)) {
@@ -137,7 +146,7 @@ export async function checkPageSpeed(
 		allFailingAudits.sort((a, b) => a.score - b.score);
 		
 		// Construct the explanation (Found) listing the main metrics and issues
-		let explanation = `Performance score: ${ score }/100. Core Web Vitals assessment: ${ cruxAssessment }.\n\n` +
+		let explanation = `Performance score: ${ score !== null ? `${score}/100` : "N/A" }. Core Web Vitals assessment: ${ cruxAssessment }.\n\n` +
 			`Key Performance Metrics:\n` +
 			`- First Contentful Paint (FCP): ${ fcp }\n` +
 			`- Largest Contentful Paint (LCP): ${ lcp }\n` +
@@ -177,7 +186,7 @@ export async function checkPageSpeed(
 			label,
 			category: "Page Speed",
 			status,
-			summary: `Performance score is ${ score }/100.`,
+			summary: `Performance score is ${ score !== null ? `${score}/100` : "N/A" }.`,
 			explanation,
 			recommendation,
 			codeExample,
