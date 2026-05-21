@@ -18,3 +18,4 @@ server/data/
 client/node_modules/
 client/dist/
 .vscode/
+/.husky/
