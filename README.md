@@ -140,7 +140,7 @@ The Express server serves the API endpoints and the built client from `client/di
 
 ### Versioning
 
-The build process automatically increments the project version in `package.json` and generates `client/src/version.ts` with the new version and current git commit hash (e.g. `0.8-b84d724`). This version is displayed in the client UI. A Git pre-commit hook is also configured to update the versioning information automatically before commits.
+The build process automatically increments the project version in `package.json` and generates `client/src/version.ts` with the new version and current git commit hash (e.g. `0.9-<commit>`). This version is displayed in the client UI. A Git pre-commit hook is also configured to update the versioning information automatically before commits.
 
 ### Docker Deployment
 
