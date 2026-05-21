@@ -6,14 +6,19 @@ export default memo(function StatusBadge<TStatus extends string>({
 	classMap,
 	children,
 	className = "px-2.5 py-0.5",
+	onClick,
 }: {
 	status: TStatus;
 	classMap: Record<TStatus, string>;
 	children: ReactNode;
 	className?: string;
+	onClick?: () => void;
 }) {
 	return (
-		<span className={ `inline-flex items-center gap-1.5 rounded-full text-xs font-bold ${ className } ${ classMap[status] }` }>
+		<span
+			onClick={ onClick }
+			className={ `inline-flex items-center gap-1.5 rounded-full text-xs font-bold ${ className } ${ classMap[status] }` }
+		>
 			<StatusIcon status={ status }/>
 			{ children }
 		</span>

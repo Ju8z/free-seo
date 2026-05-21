@@ -220,12 +220,35 @@ const SocialCheckChip = memo(function SocialCheckChip({
 }) {
 	const showScore = item.score < 100 && item.status !== "unavailable";
 	const scoreSuffix = showScore ? ` (${item.score})` : "";
+	
+	const isClickable = item.status === "warning" || item.status === "fail";
+	
+	const handleClick = () => {
+		if (!isClickable) return;
+		const checkId = item.key;
+		
+		// Dispatch custom event to expand the card
+		window.dispatchEvent(new CustomEvent("expand-fix-card", { detail: { checkId } }));
+		
+		// Open parent <details> and scroll to element
+		setTimeout(() => {
+			const element = document.querySelector(`[data-fix-card-id="${ checkId }"]`);
+			if (element) {
+				const details = element.closest("details");
+				if (details) {
+					details.open = true;
+				}
+				element.scrollIntoView({ behavior: "smooth", block: "center" });
+			}
+		}, 50);
+	};
 
 	return (
 		<StatusBadge
 			status={ item.status }
 			classMap={ socialStatusClasses }
-			className="px-2.5 py-1"
+			className={ `px-2.5 py-1 ${ isClickable ? "cursor-pointer hover:opacity-85 transition-opacity" : "" }` }
+			onClick={ handleClick }
 		>
 			{ item.label }: { formatStatusLabel(item.status) }{ scoreSuffix }
 		</StatusBadge>
