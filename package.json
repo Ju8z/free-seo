@@ -1,6 +1,6 @@
 {
   "name": "free-seo",
-  "version": "0.3",
+  "version": "0.9",
   "private": true,
   "workspaces": [
     "client",

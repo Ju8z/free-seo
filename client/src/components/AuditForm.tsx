@@ -78,6 +78,21 @@ export default memo(function AuditForm({
 					disabled={ disabled }
 				>
 					{ isLoading && <Spinner/> }
+					{ !isLoading && cooldownRemaining <= 0 && (
+						<svg
+							viewBox="0 0 20 20"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="1.75"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							className="h-4 w-4 shrink-0"
+							aria-hidden="true"
+						>
+							<circle cx="8.5" cy="8.5" r="4.5"/>
+							<path d="m12 12 4 4"/>
+						</svg>
+					) }
 					{ buttonLabel }
 				</button>
 				<input
@@ -91,7 +106,7 @@ export default memo(function AuditForm({
 					disabled={ disabled }
 				/>
 			</div>
-			<p className="mt-0.5 text-xs ml-[94px] text-brand-accent">
+			<p className="mt-0.5 text-xs ml-[114px] text-brand-accent">
 				Successful audits completed: <strong>{auditCount}</strong>
 				{ durationMs !== null && !isLoading && (
 					<span className="ml-2 text-brand-success">
