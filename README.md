@@ -1,6 +1,6 @@
 # Free SEO
 
-> **🚀 [Try it live at free-seo.click](https://free-seo.click)**
+> **🚀 [Try it live at free-seo.click](https://free-seo.link)**
 
 A compact, stateless full-stack SEO auditing tool. Enter a domain or URL and get a scored report covering on-page SEO, indexing, technical signals, generative engine optimization (GEO), and social presence — all in one request.
 
