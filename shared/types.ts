@@ -66,9 +66,9 @@ export interface AuditReport {
 	testedUrl: string;
 	finalUrl: string;
 	serpPreview: SerpSnippetPreview;
-	geo: GeoReport;
+	geo: GeoReport | null;
 	seoCategories: SeoCategoriesReport;
-	socialResults: SocialResultsReport;
+	socialResults: SocialResultsReport | null;
 	score: number;
 	statusSummary: StatusSummary;
 	checks: CheckResult[];
@@ -96,6 +96,102 @@ export type SeoCategoryId =
 	| "geo"
 	| "social";
 
+export type AuditCategoryId = SeoCategoryId;
+
+export interface AuditCategoryOption {
+	id: AuditCategoryId;
+	label: string;
+	description: string;
+	timeLabel: string;
+	minSeconds: number;
+	maxSeconds: number;
+}
+
+export const auditCategoryOptions = [
+	{
+		id: "metadata",
+		label: "Metadata",
+		description: "Titles, descriptions, language, canonical signals, and search-preview metadata.",
+		timeLabel: "<5s",
+		minSeconds: 0,
+		maxSeconds: 5,
+	},
+	{
+		id: "structure",
+		label: "Structure",
+		description: "Headings and structured data that help crawlers understand page hierarchy.",
+		timeLabel: "<5s",
+		minSeconds: 0,
+		maxSeconds: 5,
+	},
+	{
+		id: "content",
+		label: "Content",
+		description: "Readable content depth, keyword consistency, links, images, and alt text.",
+		timeLabel: "<5s",
+		minSeconds: 0,
+		maxSeconds: 5,
+	},
+	{
+		id: "indexing",
+		label: "Indexing",
+		description: "Indexability, robots rules, redirects, and sitemap discoverability.",
+		timeLabel: "5-10s",
+		minSeconds: 5,
+		maxSeconds: 10,
+	},
+	{
+		id: "technical",
+		label: "Technical",
+		description: "Transport security, HTTPS behavior, analytics, and mobile viewport signals.",
+		timeLabel: "5-10s",
+		minSeconds: 5,
+		maxSeconds: 10,
+	},
+	{
+		id: "pagespeed",
+		label: "Page Speed",
+		description: "Desktop and mobile PageSpeed checks via the PageSpeed Insights API.",
+		timeLabel: "10-25s",
+		minSeconds: 10,
+		maxSeconds: 25,
+	},
+	{
+		id: "geo",
+		label: "GEO",
+		description: "AI crawler readability, entity identity, rendered content, and llms.txt guidance.",
+		timeLabel: "8-20s",
+		minSeconds: 8,
+		maxSeconds: 20,
+	},
+	{
+		id: "social",
+		label: "Social",
+		description: "Social presence, Open Graph / X Card tags, and platform integrations.",
+		timeLabel: "5-12s",
+		minSeconds: 5,
+		maxSeconds: 12,
+	},
+] as const satisfies readonly AuditCategoryOption[];
+
+export const auditCategoryIds = auditCategoryOptions.map((option) => option.id);
+
+export interface AuditRequest {
+	input: string;
+	categories?: AuditCategoryId[];
+}
+
+export function isAuditCategoryId(value: unknown): value is AuditCategoryId {
+	return typeof value === "string" && auditCategoryIds.includes(value as AuditCategoryId);
+}
+
+export function normalizeAuditCategoryIds(value: unknown): AuditCategoryId[] {
+	if (!Array.isArray(value)) {
+		return [...auditCategoryIds];
+	}
+	return [...new Set(value.filter(isAuditCategoryId))];
+}
+
 export type AuditStatus =
 	| "excellent"
 	| "good"
@@ -109,7 +205,7 @@ export function getAuditStatus(score: number): AuditStatus {
 	return "poor";
 }
 
-export type SeoCategoryStatus = AuditStatus;
+export type SeoCategoryStatus = AuditStatus | "skipped";
 
 
 export interface SeoCategoriesReport {
@@ -134,6 +230,7 @@ export interface SeoCategoryResult {
 		fail: number;
 		not_applicable: number;
 		unavailable: number;
+		skipped: number;
 	};
 	issues: string[];
 	recommendations: string[];
@@ -144,7 +241,7 @@ export interface SeoCategoryResult {
 export interface SeoCategoryCheck {
 	id: string;
 	name: string;
-	status: BaseCheckStatus | "not_applicable" | "unavailable";
+	status: BaseCheckStatus | "not_applicable" | "unavailable" | "skipped";
 	score: number;
 	issues: string[];
 	recommendations: string[];

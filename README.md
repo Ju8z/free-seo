@@ -1,6 +1,6 @@
 # Free SEO
 
-> **🚀 [Try it live at free-seo.link](https://free-seo.link)**
+> **🚀 [Try it live at free-seo.link](http://free-seo.link)**
 
 A compact, stateless full-stack SEO auditing tool. Enter a domain or URL and get a scored report covering on-page SEO, indexing, technical signals, generative engine optimization (GEO), and social presence — all in one request.
 
@@ -151,6 +151,7 @@ chmod +x deploy.sh
 ```
 
 The `deploy.sh` script handles everything:
+
 1. Pulls latest code from git
 2. Builds the Docker image
 3. Stops and removes the old container
@@ -223,17 +224,19 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 ## Audit Coverage
 
 ### Metadata (weight 0.20)
+
 | Check | What it does |
 |---|---|
 | Title Tag | Presence and length (recommended 50–60 characters) |
 | Meta Description | Presence and length (recommended 120–160 characters) |
 | Hreflang Tags | Presence and validity of alternate language/region links |
-| HTML Language | Declared `lang` attribute on `<html>` |
+| HTML Language | Declared `lang` attribute on `` |
 | Detected Language | Actual language detected from page text via franc-min |
 | Canonical URL | Presence of the canonical link tag |
-| Search Favicon | Presence of a `<link rel="icon">` tag for Google Search display |
+| Search Favicon | Presence of a `` tag for Google Search display |
 
 ### Structure (weight 0.15)
+
 | Check | What it does |
 |---|---|
 | H1 | Exactly one H1 heading |
@@ -241,6 +244,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | Structured Data | JSON-LD, microdata, and RDFa presence and parsing |
 
 ### Content (weight 0.20)
+
 | Check | What it does |
 |---|---|
 | Keyword Consistency | Primary keyword presence in title, headings, and body text |
@@ -250,25 +254,28 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | Image Dimensions | Missing `width`/`height` attributes that cause Cumulative Layout Shift (CLS) |
 
 ### Indexing (weight 0.20)
+
 | Check | What it does |
 |---|---|
-| Noindex (Meta) | `<meta name="robots" content="noindex">` directive |
+| Noindex (Meta) | `` directive |
 | Noindex (Header) | `X-Robots-Tag: noindex` response header |
 | Robots.txt | Presence, fetchability, and parsing |
 | Blocked by Robots.txt | Whether the page path is blocked from crawling |
 | XML Sitemaps | Discovery via robots.txt and sitemap index validation |
 
 ### Technical (weight 0.15)
+
 | Check | What it does |
 |---|---|
 | SSL Enabled | Valid TLS certificate on the final URL |
 | HTTPS Redirect | HTTP → HTTPS redirect from the non-secure origin |
 | Analytics | GA4, Google Tag Manager, or Universal Analytics detection |
-| Mobile Viewport | Presence and correctness of the `<meta name="viewport">` tag |
+| Mobile Viewport | Presence and correctness of the `` tag |
 | PageSpeed Desktop | Performance audit score and core diagnostics for desktop devices |
 | PageSpeed Mobile | Performance audit score and core diagnostics for mobile devices |
 
 ### Generative Engine Optimization (weight 0.10)
+
 | Check | What it does |
 |---|---|
 | Identity Schema | Organization / LocalBusiness / Person schema (JSON-LD, microdata, RDFa) |
@@ -276,6 +283,7 @@ URL normalization → parallel fetch (HTML + robots.txt) → HTML parsing (Cheer
 | llms.txt | Presence of `/llms.txt`, link validation, and template generation |
 
 ### Social (weight 0.0 — excluded from score)
+
 | Check | What it does |
 |---|---|
 | Social Links | Facebook, X (Twitter), Instagram, LinkedIn, YouTube link detection |
@@ -323,7 +331,6 @@ This is POC-level protection. Harden before exposing in a production, public-fac
 - The score is a heuristic summary, not a search-engine ranking prediction.
 - Stateless design means no history, no trends, no comparison across audits.
 
-
 ## License
 
 This project is licensed under the [Polyform Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0).
@@ -341,3 +348,4 @@ For commercial licensing inquiries, please open an issue on GitHub.
 ### Full License Text
 
 The complete license text is available at: https://polyformproject.org/licenses/noncommercial/1.0.0
+

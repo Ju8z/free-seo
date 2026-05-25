@@ -95,7 +95,16 @@ function apiPlugin() {
 					try {
 						const { runAudit } = await import("../server/src/services/runAudit.js");
 						const { incrementAuditCount } = await import("../server/src/services/auditCounter.js");
-						const result = await runAudit(JSON.parse(body).input);
+						const { normalizeAuditCategoryIds } = await import("../server/src/types.js");
+						const payload = JSON.parse(body);
+						const categories = normalizeAuditCategoryIds(payload.categories);
+						if (categories.length === 0) {
+							res.statusCode = 400;
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify({ error: "Select at least one test category." }));
+							return;
+						}
+						const result = await runAudit(payload.input, categories);
 						if (cooldown > 0) {
 							lastAuditByIp.set(getClientIp(req), Date.now());
 						}

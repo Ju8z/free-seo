@@ -1,4 +1,4 @@
-import type { CheckStatus, BaseCheckStatus, SeoCategoryStatus, } from "../../../shared/types";
+import type { BaseCheckStatus, CheckStatus, SeoCategoryStatus, } from "../../../shared/types";
 
 export const statusTagClasses: Record<CheckStatus, string> = {
 	pass: "bg-brand-success-soft text-brand-success",
@@ -12,12 +12,14 @@ export const categoryStatusClasses: Record<SeoCategoryStatus, string> = {
 	good: "bg-brand-accent-soft text-brand-accent-dark",
 	needs_improvement: "bg-brand-warning-soft text-brand-warning",
 	poor: "bg-brand-danger-soft text-brand-danger",
+	skipped: "bg-brand-neutral-soft text-brand-muted",
 };
 
-export const categoryCheckStatusClasses: Record<BaseCheckStatus | "not_applicable" | "unavailable", string> = {
+export const categoryCheckStatusClasses: Record<BaseCheckStatus | "not_applicable" | "unavailable" | "skipped", string> = {
 	pass: "bg-brand-success-soft text-brand-success",
 	warning: "bg-brand-warning-soft text-brand-warning",
 	fail: "bg-brand-danger-soft text-brand-danger",
 	not_applicable: "bg-brand-neutral-soft text-brand-muted",
 	unavailable: "bg-brand-neutral-soft text-brand-muted",
+	skipped: "bg-brand-neutral-soft text-brand-muted",
 };

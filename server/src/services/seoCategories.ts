@@ -1,6 +1,7 @@
 import { seoCategoryConfigs } from "./seoCategoryConfig.js";
 import { getCheckScore, getCheckWeight, statusMultipliers } from "./score.js";
 import type {
+	AuditCategoryId,
 	BaseCheckStatus,
 	CheckId,
 	CheckResult,
@@ -118,12 +119,17 @@ export function buildSeoCategoriesReport(
   geo: GeoReport | null,
   socialResults: SocialResultsReport | null,
   finalUrl: string,
+	selectedCategoryIds: readonly AuditCategoryId[] = seoCategoryConfigs.map((config) => config.id),
 ): SeoCategoriesReport {
+	const selectedCategories = new Set(selectedCategoryIds);
   const checkMap = new Map<CheckId, CheckResult>(
     checks.map((check) => [check.id, check]),
   );
   const categories = Object.fromEntries(
     seoCategoryConfigs.map((config) => {
+	    if (!selectedCategories.has(config.id)) {
+		    return [config.id, buildSkippedCategory(config)];
+	    }
       const category =
         config.id === "geo"
           ? buildGeoCategory(config, geo, finalUrl)
@@ -142,6 +148,51 @@ export function buildSeoCategoriesReport(
     summary: buildOverallSummary(overallScore),
     categories,
   };
+}
+
+function buildSkippedCategory(
+	config: (typeof seoCategoryConfigs)[number],
+): SeoCategoryResult {
+	const skippedChecks: SeoCategoryCheck[] = [
+		...config.checks.map((checkId) => ({
+			id: checkId,
+			name: checkId,
+			status: "skipped" as const,
+			score: 0,
+			issues: [],
+			recommendations: [],
+			prompts: [],
+			codeExamples: [],
+			explanation: "Skipped because this category was not selected before running the audit.",
+		})),
+		...(config.displayChecks || []).map((displayCheck) => ({
+			id: displayCheck.id,
+			name: displayCheck.name,
+			status: "skipped" as const,
+			score: 0,
+			issues: [],
+			recommendations: [],
+			prompts: [],
+			codeExamples: [],
+			explanation: "Skipped because this category was not selected before running the audit.",
+		})),
+	];
+	
+	return {
+		id: config.id,
+		label: config.label,
+		description: config.description,
+		weight: config.weight,
+		score: 0,
+		status: "skipped",
+		summary: `${ config.label } was skipped for this audit.`,
+		checks: skippedChecks,
+		statusSummary: summarizeCategoryChecks(skippedChecks),
+		issues: [],
+		recommendations: [],
+		prompts: [],
+		excludedFromOverall: true,
+	};
 }
 
 export function getSeoCategoryStatus(score: number): SeoCategoryStatus {
@@ -252,6 +303,7 @@ function buildGeoCategory(
         fail: 0,
         not_applicable: 0,
         unavailable: 0,
+	      skipped: 0,
       },
       issues: [],
       recommendations: [],
@@ -479,6 +531,7 @@ function buildSocialCategory(
         fail: 0,
         not_applicable: 0,
         unavailable: 0,
+	      skipped: 0,
       },
       issues: [],
       recommendations: [],
@@ -649,11 +702,11 @@ function calculateCheckCategoryScore(
   );
 }
 
-function mapCheckStatus(status: CheckResult["status"]): BaseCheckStatus | "not_applicable" | "unavailable" {
+function mapCheckStatus(status: CheckResult["status"]): BaseCheckStatus | "not_applicable" | "unavailable" | "skipped" {
   return status === "info" ? "not_applicable" : status;
 }
 
-function mapGeoStatus(status: BaseCheckStatus): BaseCheckStatus | "not_applicable" | "unavailable" {
+function mapGeoStatus(status: BaseCheckStatus): BaseCheckStatus | "not_applicable" | "unavailable" | "skipped" {
   return status;
 }
 
@@ -665,7 +718,7 @@ function summarizeCategoryChecks(
       summary[check.status] += 1;
       return summary;
     },
-    { pass: 0, warning: 0, fail: 0, not_applicable: 0, unavailable: 0 },
+	  { pass: 0, warning: 0, fail: 0, not_applicable: 0, unavailable: 0, skipped: 0 },
   );
 }
 

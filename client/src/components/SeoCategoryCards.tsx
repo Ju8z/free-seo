@@ -91,6 +91,12 @@ const SeoCategoryCard = memo(function SeoCategoryCard({
 			count: category.statusSummary.not_applicable,
 			className: categoryCheckStatusClasses.not_applicable,
 		},
+		{
+			status: "skipped",
+			label: "skipped",
+			count: category.statusSummary.skipped,
+			className: categoryCheckStatusClasses.skipped,
+		},
 	] as const, [category.statusSummary]);
 
 	const checkChips = useMemo(
@@ -116,7 +122,9 @@ const SeoCategoryCard = memo(function SeoCategoryCard({
 					status={ category.status }
 					classMap={ categoryStatusClasses }
 				>
-					{ formatStatusLabel(category.status) } - { displayScore }
+					{ category.status === "skipped"
+						? "skipped"
+						: `${ formatStatusLabel(category.status) } - ${ displayScore }` }
 				</StatusBadge>
 			}
 			summary={ category.description }
@@ -144,7 +152,7 @@ const CheckChip = memo(function CheckChip({
 	canToggle: boolean;
 	onToggle?: () => void;
 }) {
-	const showScore = check.score < 100 && check.status !== "not_applicable";
+	const showScore = check.score < 100 && check.status !== "not_applicable" && check.status !== "unavailable" && check.status !== "skipped";
 	const scoreSuffix = showScore ? ` (${check.score})` : "";
 	
 	const isClickable = check.status === "warning" || check.status === "fail";

@@ -5,6 +5,7 @@ import compression from "compression";
 import { runAudit } from "./services/runAudit.js";
 import { getAuditCount, incrementAuditCount, subscribeToCountUpdates } from "./services/auditCounter.js";
 import { getCooldownSeconds, loadEnv } from "./services/envConfig.js";
+import { normalizeAuditCategoryIds } from "./types.js";
 
 loadEnv();
 
@@ -109,7 +110,12 @@ app.post("/api/audit", async (req, res) => {
 
 	try {
 		const input = req.body?.input;
-		const result = await runAudit(input);
+		const categories = normalizeAuditCategoryIds(req.body?.categories);
+		if (categories.length === 0) {
+			res.status(400).json({ error: "Select at least one test category." });
+			return;
+		}
+		const result = await runAudit(input, categories);
 		lastAuditByIp.set(ip, Date.now());
 		incrementAuditCount();
 		res.json(result);

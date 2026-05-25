@@ -1,11 +1,14 @@
 import { memo, useCallback, useState } from "react";
-import type { AuditReport, CheckStatus } from "../../../shared/types";
+import type { AuditReport, CheckStatus, SeoCategoryResult } from "../../../shared/types";
 import SummaryCard from "./SummaryCard";
 import NotesList from "./NotesList";
 import SerpSnippetPreview from "./SerpSnippetPreview";
 import SeoScoreOverview from "./SeoScoreOverview";
 import SeoCategoryCards from "./SeoCategoryCards";
 import SocialResultsSection from "./SocialResultsSection";
+import { categoryStatusClasses } from "../utils/constants";
+import { formatStatusLabel } from "../utils/format";
+import StatusBadge from "./StatusBadge";
 
 export default memo(function ResultsView({
 	audit,
@@ -51,14 +54,37 @@ export default memo(function ResultsView({
 			
 			<SeoCategoryCards seoCategories={ audit.seoCategories } excludedCheckIds={ excludedCheckIds } onToggleCheckExclusion={ toggleCheckExclusion }/>
 			
-			{audit.socialResults && (
+			{ audit.socialResults ? (
 				<SocialResultsSection
 					socialResults={ audit.socialResults }
 					socialCategory={ audit.seoCategories.categories.social }
 				/>
+			) : audit.seoCategories.categories.social.status === "skipped" && (
+				<SkippedSocialCategory category={ audit.seoCategories.categories.social }/>
 			)}
 			
 			<NotesList notes={ audit.notes }/>
 		</div>
+	);
+});
+
+const SkippedSocialCategory = memo(function SkippedSocialCategory({
+	category,
+}: {
+	category: SeoCategoryResult;
+}) {
+	return (
+		<section id="category-social" className="scroll-mt-4 rounded-xl border border-brand-border bg-brand-surface p-6 shadow-panel">
+			<div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+				<div>
+					<h3 className="text-lg font-bold text-brand-headline">{ category.label }</h3>
+					<p className="mt-1 text-sm text-brand-muted">{ category.description }</p>
+				</div>
+				<StatusBadge status={ category.status } classMap={ categoryStatusClasses }>
+					{ formatStatusLabel(category.status) }
+				</StatusBadge>
+			</div>
+			<p className="mt-4 text-sm text-brand-muted">{ category.summary }</p>
+		</section>
 	);
 });

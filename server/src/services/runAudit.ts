@@ -33,11 +33,14 @@ import { buildGeoReport } from "./geo.js";
 import { buildSeoCategoriesReport } from "./seoCategories.js";
 import { buildSocialResultsReport } from "./socialScore.js";
 import { parseStructuredData } from "./schemaParser.js";
-import type { AuditContext, AuditReport, CheckResult } from "../types.js";
+import type { AuditCategoryId, AuditContext, AuditReport, CheckResult } from "../types.js";
+import { auditCategoryIds } from "../types.js";
 
 export async function runAudit(
 	input: unknown,
+	categories: readonly AuditCategoryId[] = auditCategoryIds,
 ): Promise<AuditReport> {
+	const selectedCategories = new Set(categories);
 	const normalizedInput = normalizeInput(input);
 	const [page, initialRobots] = await Promise.all([
 		fetchPage(input),
@@ -99,54 +102,85 @@ export async function runAudit(
 		subheadingsText,
 		imageAltText,
 	};
-
-	// Parse structuredData once for reuse across checks
-	const structuredDataResult = parseStructuredData(context);
-
-	const syncChecks: CheckResult[] = [
-		checkTitleTag(context),
-		checkMetaDescription(context),
-		checkHreflang(context),
-		checkLanguage(context),
-		checkH1(context),
-		checkHeadings(context),
-		checkKeywordConsistency(context),
-		checkContentAmount(context),
-		checkImageAlt(context),
-		checkCanonical(context),
-		checkNoindexMeta(context),
-		checkNoindexHeader(context),
-		checkAnalytics(context),
-		checkStructuredData(context, structuredDataResult),
-		checkRobotsTxt(context),
-		checkBlockedByRobots(context),
-		checkMobileViewport(context),
-		checkCrawlableLinks(context),
-		checkImageDimensions(context),
-		checkSearchFavicon(context),
-	];
+	
+	// Parse structuredData once only when a selected category needs it.
+	const structuredDataResult =
+		selectedCategories.has("structure") || selectedCategories.has("geo")
+			? parseStructuredData(context)
+			: null;
+	
+	const syncChecks: CheckResult[] = [];
+	if (selectedCategories.has("metadata")) {
+		syncChecks.push(
+			checkTitleTag(context),
+			checkMetaDescription(context),
+			checkHreflang(context),
+			checkLanguage(context),
+			checkCanonical(context),
+			checkSearchFavicon(context),
+		);
+	}
+	if (selectedCategories.has("structure")) {
+		syncChecks.push(
+			checkH1(context),
+			checkHeadings(context),
+			checkStructuredData(context, structuredDataResult ?? parseStructuredData(context)),
+		);
+	}
+	if (selectedCategories.has("content")) {
+		syncChecks.push(
+			checkKeywordConsistency(context),
+			checkContentAmount(context),
+			checkImageAlt(context),
+			checkCrawlableLinks(context),
+			checkImageDimensions(context),
+		);
+	}
+	if (selectedCategories.has("indexing")) {
+		syncChecks.push(
+			checkNoindexMeta(context),
+			checkNoindexHeader(context),
+			checkRobotsTxt(context),
+			checkBlockedByRobots(context),
+		);
+	}
+	if (selectedCategories.has("technical")) {
+		syncChecks.push(
+			checkAnalytics(context),
+			checkMobileViewport(context),
+		);
+	}
 
 	// Run independent async checks in parallel
-	const [sslResult, httpsResult, sitemapsResult, pagespeedDesktopResult, pagespeedMobileResult, geo, socialResults] = await Promise.all([
-		checkSslEnabled(context),
-		checkHttpsRedirect(context),
-		checkXmlSitemaps(context),
-		checkPageSpeed(context, "desktop"),
-		checkPageSpeed(context, "mobile"),
-		buildGeoReport(context, structuredDataResult),
-		buildSocialResultsReport(context),
+	const asyncCheckPromises: Array<Promise<CheckResult>> = [];
+	if (selectedCategories.has("technical")) {
+		asyncCheckPromises.push(checkSslEnabled(context), checkHttpsRedirect(context));
+	}
+	if (selectedCategories.has("indexing")) {
+		asyncCheckPromises.push(checkXmlSitemaps(context));
+	}
+	if (selectedCategories.has("pagespeed")) {
+		asyncCheckPromises.push(
+			checkPageSpeed(context, "desktop"),
+			checkPageSpeed(context, "mobile"),
+		);
+	}
+	const [asyncChecks, geo, socialResults] = await Promise.all([
+		Promise.all(asyncCheckPromises),
+		selectedCategories.has("geo")
+			? buildGeoReport(context, structuredDataResult ?? parseStructuredData(context))
+			: Promise.resolve(null),
+		selectedCategories.has("social")
+			? buildSocialResultsReport(context)
+			: Promise.resolve(null),
 	]);
 
 	const checks: CheckResult[] = [
 		...syncChecks,
-		sslResult,
-		httpsResult,
-		sitemapsResult,
-		pagespeedDesktopResult,
-		pagespeedMobileResult,
+		...asyncChecks,
 	];
-
-	const seoCategories = buildSeoCategoriesReport(checks, geo, socialResults, page.finalUrl);
+	
+	const seoCategories = buildSeoCategoriesReport(checks, geo, socialResults, page.finalUrl, categories);
 	
 	const statusSummary = { pass: 0, warning: 0, fail: 0, info: 0 };
 	for (const cat of Object.values(seoCategories.categories)) {
@@ -154,7 +188,7 @@ export async function runAudit(
 		statusSummary.pass += s.pass;
 		statusSummary.warning += s.warning;
 		statusSummary.fail += s.fail;
-		statusSummary.info += s.not_applicable + s.unavailable;
+		statusSummary.info += s.not_applicable + s.unavailable + s.skipped;
 	}
 
 	return {

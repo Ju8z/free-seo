@@ -1,4 +1,4 @@
-import type { AuditReport } from "../../../shared/types";
+import type { AuditCategoryId, AuditReport, AuditRequest } from "../../../shared/types";
 
 export interface AuditConfig {
 	count: number;
@@ -30,6 +30,7 @@ function normalizeAuditErrorMessage(message: string): string {
 
 export async function requestAudit(
 	input: string,
+	categories: AuditCategoryId[],
 	signal?: AbortSignal,
 ): Promise<AuditReport> {
 	const timeoutSignal = AbortSignal.timeout(30_000);
@@ -37,11 +38,13 @@ export async function requestAudit(
 		? AbortSignal.any([signal, timeoutSignal])
 		: timeoutSignal;
 	
+	const requestBody: AuditRequest = { input, categories };
+	
 	try {
 		const response = await fetch("/api/audit", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ input }),
+			body: JSON.stringify(requestBody),
 			signal: effectiveSignal,
 		});
 		
