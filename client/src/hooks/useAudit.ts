@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import type { AuditReport } from "../../../shared/types";
+import type { AuditCategoryId, AuditReport } from "../../../shared/types";
 import { requestAudit } from "../api/audit";
 
 export interface UseAuditState {
@@ -10,7 +10,7 @@ export interface UseAuditState {
 }
 
 export interface UseAuditActions {
-	runAudit: (input: string) => Promise<void>;
+	runAudit: (input: string, categories: AuditCategoryId[]) => Promise<void>;
 	clearError: () => void;
 }
 
@@ -21,7 +21,7 @@ export function useAudit(): UseAuditState & UseAuditActions {
 	const [durationMs, setDurationMs] = useState<number | null>(null);
 	const abortRef = useRef<AbortController | null>(null);
 	
-	const runAudit = useCallback(async(input: string) => {
+	const runAudit = useCallback(async(input: string, categories: AuditCategoryId[]) => {
 		abortRef.current?.abort();
 		const controller = new AbortController();
 		abortRef.current = controller;
@@ -32,7 +32,7 @@ export function useAudit(): UseAuditState & UseAuditActions {
 		const startedAt = performance.now();
 		
 		try {
-			const result = await requestAudit(input, controller.signal);
+			const result = await requestAudit(input, categories, controller.signal);
 			setAudit(result);
 			setDurationMs(performance.now() - startedAt);
 		} catch (err: unknown) {

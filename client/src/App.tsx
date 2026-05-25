@@ -7,6 +7,7 @@ import EmptyState from "./components/EmptyState";
 import ThemeToggle from "./components/ThemeToggle";
 import Footer from "./components/Footer";
 import { fetchAuditConfig, subscribeToAuditCount } from "./api/audit";
+import { type AuditCategoryId, auditCategoryIds } from "../../shared/types";
 
 const ResultsView = lazy( () => import( "./components/ResultsView" ) );
 const ErrorBanner = lazy( () => import( "./components/ErrorBanner" ) );
@@ -34,6 +35,9 @@ export default function App() {
 	const inputRef = useRef<HTMLInputElement | null>( null );
 	const [ auditCount, setAuditCount ] = useState( 0 );
 	const [ cooldownSeconds, setCooldownSeconds ] = useState( 0 );
+	const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<AuditCategoryId>>(
+		() => new Set(auditCategoryIds),
+	);
 
 	useEffect( () => {
 		fetchAuditConfig().then( ( config ) => {
@@ -45,8 +49,25 @@ export default function App() {
 
 	const handleSubmit = useCallback( async ( input: string ) => {
 		clearError();
-		await runAudit( input );
-	}, [ clearError, runAudit ] );
+		await runAudit(input, [...selectedCategoryIds]);
+	}, [clearError, runAudit, selectedCategoryIds]);
+	
+	const handleToggleCategory = useCallback((id: AuditCategoryId) => {
+		setSelectedCategoryIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) next.delete(id);
+			else next.add(id);
+			return next;
+		});
+	}, []);
+	
+	const handleSelectAllCategories = useCallback(() => {
+		setSelectedCategoryIds(new Set(auditCategoryIds));
+	}, []);
+	
+	const handleClearCategories = useCallback(() => {
+		setSelectedCategoryIds(new Set());
+	}, []);
 
 	const handleErrorClose = useCallback( () => {
 		clearError();
@@ -61,7 +82,7 @@ export default function App() {
 				<header className="rounded-xl border border-brand-border bg-brand-surface p-6 shadow-panel">
 					<div className="space-y-4">
 						{/* Logo (left) + badges & description (right) */ }
-						<div className="flex items-stretch gap-4">
+						<div className="flex flex-col items-start gap-4 sm:flex-row sm:items-stretch">
 							<h1 className="flex shrink-0 items-center leading-none">
 								<img
 									src="/logo.webp"
@@ -70,7 +91,7 @@ export default function App() {
 									height={ 350 }
 									fetchPriority="high"
 									decoding="async"
-									className="h-full max-h-24 w-auto"
+									className="h-auto w-52 max-w-full sm:h-full sm:max-h-24 sm:w-auto"
 								/>
 							</h1>
 							<div className="flex flex-1 flex-col justify-center gap-2 min-w-0">
@@ -108,7 +129,7 @@ export default function App() {
 								</div>
 								<p className="text-sm leading-relaxed text-brand-muted">
 									Run a <strong className="text-brand-headline">free, privacy-first SEO audit</strong> on any URL.
-									Instant on-page SEO insights — meta tags, headings, canonical, hreflang,
+									Instant on-page SEO insights - meta tags, headings, canonical, hreflang,
 									robots, structured data, image alt, and Core Web Vitals signals.
 									No signup. No cookies. No tracking.
 								</p>
@@ -116,8 +137,8 @@ export default function App() {
 						</div>
 
 						{/* Audit Form and Theme Toggle Row */ }
-						<div className="flex items-start gap-3">
-							<div className="flex-1">
+						<div className="flex flex-col items-start gap-3 sm:flex-row">
+							<div className="w-full sm:flex-1">
 								<AuditForm
 									onSubmit={ handleSubmit }
 									isLoading={ isLoading }
@@ -125,6 +146,7 @@ export default function App() {
 									auditCount={ auditCount }
 									cooldownSeconds={ cooldownSeconds }
 									durationMs={ durationMs }
+									canSubmit={ selectedCategoryIds.size > 0 }
 								/>
 							</div>
 							<ThemeToggle theme={ theme } setTheme={ setTheme }/>
@@ -133,7 +155,14 @@ export default function App() {
 				</header>
 				<section aria-label="Audit results">
 					{isLoading && <LoadingBanner />}
-					{!isLoading && !audit && !error && <EmptyState />}
+					{ !isLoading && !audit && !error && (
+						<EmptyState
+							selectedCategoryIds={ selectedCategoryIds }
+							onToggleCategory={ handleToggleCategory }
+							onSelectAll={ handleSelectAllCategories }
+							onClearSelection={ handleClearCategories }
+						/>
+					) }
 					{audit && !isLoading && (
 						<Suspense fallback={<LoadingBanner />}>
 							<ResultsView audit={audit} />

@@ -21,6 +21,7 @@ const dotClassMap: Record<SeoCategoryResult["status"], string> = {
 	good: "bg-brand-accent",
 	needs_improvement: "bg-brand-warning",
 	poor: "bg-brand-danger",
+	skipped: "bg-brand-muted",
 };
 
 function recalculateOverallScore(
@@ -108,7 +109,7 @@ export default memo(function SeoScoreOverview({
 			const matchingChecks = cat.checks.filter((check) => {
 				const status = check.status as string;
 				if (selectedStatus === "info") {
-					return status === "not_applicable" || status === "unavailable" || status === "info";
+					return status === "not_applicable" || status === "unavailable" || status === "info" || status === "skipped";
 				}
 				return status === selectedStatus;
 			});
@@ -232,10 +233,11 @@ const CategoryScoreChip = memo(function CategoryScoreChip({
 		() => recalculateCategoryScore(category, excludedCheckIds),
 		[category, excludedCheckIds],
 	);
+	const isSkipped = category.status === "skipped";
 
 	return (
 		<div
-			className={`rounded-lg border border-brand-border bg-brand-card-header px-3 py-2 relative transition-opacity cursor-pointer ${isHidden ? "opacity-40" : "hover:border-brand-accent/50"}`}
+			className={ `rounded-lg border border-brand-border bg-brand-card-header px-3 py-2 relative transition-opacity cursor-pointer ${ isHidden || isSkipped ? "opacity-60" : "hover:border-brand-accent/50" }` }
 			onClick={() => {
 				document.getElementById(`category-${category.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
 			}}
@@ -257,7 +259,7 @@ const CategoryScoreChip = memo(function CategoryScoreChip({
 			</div>
 			<div className="mt-1 flex items-center justify-between gap-2">
 				<span className={`text-lg font-extrabold text-brand-headline ${isHidden ? "line-through decoration-2" : ""}`}>
-					{displayScore}
+					{ isSkipped ? "Skipped" : displayScore }
 				</span>
 				<span className={`h-2.5 w-2.5 rounded-full ${dotClassMap[category.status]}`} />
 			</div>

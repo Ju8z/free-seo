@@ -10,7 +10,8 @@ type StatusName =
 	| "fail"
 	| "info"
 	| "not_applicable"
-	| "unavailable";
+	| "unavailable"
+	| "skipped";
 
 function iconClassName(className?: string): string {
 	return className ?? "h-3.5 w-3.5 shrink-0";
@@ -38,6 +39,7 @@ export default memo(function StatusIcon({
 			return <XCircleIcon className={ iconClassName(className) }/>;
 		case "not_applicable":
 		case "unavailable":
+		case "skipped":
 			return <MinusCircleIcon className={ iconClassName(className) }/>;
 		default:
 			return null;

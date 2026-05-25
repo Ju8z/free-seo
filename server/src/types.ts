@@ -13,6 +13,9 @@ export type {
 	AuditReport,
 	SerpSnippetPreview,
 	SeoCategoryId,
+	AuditCategoryId,
+	AuditCategoryOption,
+	AuditRequest,
 	SeoCategoryStatus,
 	AuditStatus,
 	SeoCategoriesReport,
@@ -44,4 +47,12 @@ export interface AuditContext extends BaseAuditContext {
 	$: CheerioAPI;
 }
 
-export { checkWeights, statusMultipliers, getAuditStatus } from "../../shared/types.js";
+export {
+	auditCategoryIds,
+	auditCategoryOptions,
+	checkWeights,
+	getAuditStatus,
+	isAuditCategoryId,
+	normalizeAuditCategoryIds,
+	statusMultipliers,
+} from "../../shared/types.js";

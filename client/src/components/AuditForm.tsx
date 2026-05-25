@@ -8,6 +8,7 @@ export default memo(function AuditForm({
 	auditCount,
 	cooldownSeconds = 0,
 	durationMs = null,
+	canSubmit = true,
 }: {
 	onSubmit: (input: string) => Promise<void>;
 	isLoading: boolean;
@@ -15,6 +16,7 @@ export default memo(function AuditForm({
 	auditCount: number;
 	cooldownSeconds?: number;
 	durationMs?: number | null;
+	canSubmit?: boolean;
 }) {
 	const [value, setValue] = useState("");
 	const [localError, setLocalError] = useState("");
@@ -44,8 +46,9 @@ export default memo(function AuditForm({
 		frame = requestAnimationFrame(tick);
 		return () => cancelAnimationFrame(frame);
 	}, [cooldownRemaining > 0, cooldownSeconds]);
-
-	const disabled = isLoading || cooldownRemaining > 0;
+	
+	const formDisabled = isLoading || cooldownRemaining > 0;
+	const submitDisabled = formDisabled || !canSubmit;
 
 	const handleSubmit = useCallback((event: FormEvent) => {
 		event.preventDefault();
@@ -54,9 +57,13 @@ export default memo(function AuditForm({
 			setLocalError("Enter a domain or URL to audit.");
 			return;
 		}
+		if (!canSubmit) {
+			setLocalError("Select at least one test category.");
+			return;
+		}
 		setLocalError("");
 		onSubmit(trimmed);
-	}, [value, onSubmit]);
+	}, [value, canSubmit, onSubmit]);
 
 	const handleChange = useCallback((next: string) => {
 		setValue(next);
@@ -71,11 +78,11 @@ export default memo(function AuditForm({
 	
 	return (
 		<form onSubmit={ handleSubmit } noValidate>
-			<div className="flex flex-col gap-2 sm:flex-row">
+			<div className="flex flex-col-reverse gap-2 sm:flex-row">
 				<button
 					type="submit"
-					className="inline-flex min-w-20 items-center justify-center gap-2 rounded-lg bg-brand-accent px-5 py-2 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-accent-dark focus:outline-none focus:ring-2 focus:ring-brand-accent/30 disabled:cursor-not-allowed disabled:opacity-60"
-					disabled={ disabled }
+					className="inline-flex min-w-20 items-center justify-center gap-2 self-center rounded-lg bg-brand-accent px-5 py-2 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-accent-dark focus:outline-none focus:ring-2 focus:ring-brand-accent/30 disabled:cursor-not-allowed disabled:opacity-60 sm:self-auto"
+					disabled={ submitDisabled }
 				>
 					{ isLoading && <Spinner/> }
 					{ !isLoading && cooldownRemaining <= 0 && (
@@ -98,15 +105,15 @@ export default memo(function AuditForm({
 				<input
 					ref={ inputRef }
 					type="text"
-					className="flex-1 rounded-lg border border-brand-border-strong bg-brand-input px-3 py-2 text-sm text-brand-headline focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent/20 disabled:bg-brand-input-disabled disabled:text-brand-muted"
+					className="w-full flex-1 rounded-lg border border-brand-border-strong bg-brand-input px-3 py-2 text-sm text-brand-headline focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent/20 disabled:bg-brand-input-disabled disabled:text-brand-muted"
 					placeholder="w3schools.com"
 					autoComplete="off"
 					value={ value }
 					onChange={ (e) => handleChange(e.target.value) }
-					disabled={ disabled }
+					disabled={ formDisabled }
 				/>
 			</div>
-			<p className="mt-0.5 text-xs ml-[114px] text-brand-accent">
+			<p className="mt-1 text-xs text-brand-accent sm:ml-[114px]">
 				Successful audits completed: <strong>{auditCount}</strong>
 				{ durationMs !== null && !isLoading && (
 					<span className="ml-2 text-brand-success">
