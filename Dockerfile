@@ -5,11 +5,12 @@ WORKDIR /app
 
 # Copy package files for workspace setup
 COPY package.json ./
+COPY package-lock.json ./
 COPY client/package.json client/
 COPY server/package.json server/
 
 # Install all dependencies (including devDependencies for building)
-RUN npm install
+RUN npm ci
 
 # Copy source code
 COPY shared/ shared/
@@ -48,10 +49,11 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json ./
+COPY package-lock.json ./
 COPY server/package.json server/
 
 # Install production dependencies for the server workspace (tsx is included as a dependency)
-RUN npm install -w server --omit=dev
+RUN npm ci -w server --omit=dev --ignore-scripts
 
 # Install Playwright Chromium browser
 RUN npx -w server playwright install chromium
